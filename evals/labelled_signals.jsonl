@@ -1,0 +1,28 @@
+{"event":"Notified the OAIC of an eligible data breach involving personal information.","expected":"breach_incident","note":"breach phrased via regulator, no literal 'breach of systems'"}
+{"event":"Disclosed a ransomware incident that disrupted operations for three days.","expected":"breach_incident","note":"clear ransomware"}
+{"event":"Customer data exposed after a third-party vendor was compromised.","expected":"breach_incident","note":"no word 'breach'; 'exposed'/'compromised'"}
+{"event":"Reported a data breach affecting customer records last quarter.","expected":"breach_incident","note":"literal breach"}
+{"event":"Announced a migration of core systems to the cloud.","expected":"cloud_migration","note":"cloud"}
+{"event":"Rolling out a company-wide move from on-prem to AWS.","expected":"cloud_migration","note":"on-prem -> cloud"}
+{"event":"Completed a digital transformation program expanding online services.","expected":"cloud_migration","note":"digital transformation, no word cloud"}
+{"event":"Appointed a new Chief Information Officer.","expected":"leadership_change","note":"CIO"}
+{"event":"Named a new CTO to lead technology strategy.","expected":"leadership_change","note":"CTO"}
+{"event":"New Head of IT joined from a major bank.","expected":"leadership_change","note":"Head of IT, 'joined from'"}
+{"event":"Appointed a new Head of Security after a board review.","expected":"leadership_change","note":"Head of Security"}
+{"event":"Closed a Series B funding round to accelerate growth.","expected":"funding_round","note":"series B"}
+{"event":"Secured new investment to expand into new markets.","expected":"funding_round","note":"investment, no 'series'"}
+{"event":"Raised fresh capital from existing backers.","expected":"funding_round","note":"raised capital"}
+{"event":"Facing tighter APRA CPS 234 compliance obligations this financial year.","expected":"compliance_pressure","note":"CPS 234"}
+{"event":"Preparing for new SOCI Act obligations as critical infrastructure.","expected":"compliance_pressure","note":"SOCI"}
+{"event":"Must meet PCI-DSS requirements ahead of peak trading season.","expected":"compliance_pressure","note":"PCI-DSS"}
+{"event":"Working towards Essential Eight maturity level two.","expected":"compliance_pressure","note":"Essential Eight"}
+{"event":"Reviewing obligations under the Privacy Act reforms.","expected":"compliance_pressure","note":"Privacy Act"}
+{"event":"Opened a new office to serve regional customers.","expected":"none","note":"routine"}
+{"event":"Launched a new product line for existing customers.","expected":"none","note":"routine"}
+{"event":"Published its quarterly business update.","expected":"none","note":"routine"}
+{"event":"Won a local business excellence award.","expected":"none","note":"routine"}
+{"event":"Hired 20 new sales staff to grow the team.","expected":"none","note":"hiring but not security/leadership"}
+{"event":"After a ransomware attack, the company is now hiring a Head of Security.","expected":"breach_incident","note":"breach + leadership: breach precedence"}
+{"event":"Following a data breach, leaders committed to new Privacy Act controls.","expected":"breach_incident","note":"breach + compliance: breach precedence"}
+{"event":"Migrating to the cloud while raising a Series A.","expected":"cloud_migration","note":"cloud + funding: cloud is the stronger cyber signal"}
+{"event":"A new CIO announced a cloud migration program.","expected":"cloud_migration","note":"leadership + cloud: initiative is the buying signal"}

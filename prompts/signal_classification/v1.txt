@@ -1,0 +1,7 @@
+Classify this company event for cybersecurity sales relevance.
+
+Event: "{event}"
+
+Which of these best describes it? breach_incident, cloud_migration, leadership_change, funding_round, compliance_pressure, none
+
+Answer with just the label.

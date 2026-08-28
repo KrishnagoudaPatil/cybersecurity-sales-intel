@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Data (large / regenerable) — keep the sample, ignore bulk
+data/raw/*
+!data/raw/.gitkeep
+
+# Traces / eval run outputs (keep committed results doc, ignore raw run logs)
+traces/*.jsonl
+evals/runs/*
+!evals/runs/.gitkeep
+
+# OS
+.DS_Store
