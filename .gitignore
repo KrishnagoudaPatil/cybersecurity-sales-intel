@@ -29,3 +29,6 @@ evals/runs/*
 
 # OS
 .DS_Store
+
+# local secrets (keys)
+.secrets/

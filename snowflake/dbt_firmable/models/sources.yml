@@ -1,0 +1,12 @@
+version: 2
+sources:
+  - name: raw
+    database: FIRMABLE
+    schema: RAW
+    description: "Raw Shodan internet-scan records, one VARIANT per service observation."
+    tables:
+      - name: scans
+        description: "One row per scanned IP:port service. Column V holds the raw JSON."
+        columns:
+          - name: v
+            description: "Raw Shodan record (VARIANT)."

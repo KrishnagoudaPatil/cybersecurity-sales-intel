@@ -1,0 +1,11 @@
+version: 2
+models:
+  - name: stg_services
+    description: "One typed row per scanned IP:port service (honeypots excluded)."
+    columns:
+      - name: ip
+        description: "IPv4 address of the service."
+        tests: [not_null]
+      - name: port
+        description: "TCP/UDP port."
+        tests: [not_null]
