@@ -84,3 +84,14 @@ def cost_summary():
         f["input_tokens"] += r.get("input_tokens", 0)
         f["output_tokens"] += r.get("output_tokens", 0)
     return {"calls": calls, "total_cost_usd": round(total_cost, 6), "by_feature": by_feature}
+
+
+# --- Optional: serve the built React SPA from the same origin (single-URL deploy) ---
+# If frontend/dist exists (i.e. `npm run build` was run), mount it at / so the whole
+# app is one URL. In dev we skip this and use the Vite proxy instead.
+from app.config import REPO_ROOT  # noqa: E402
+from fastapi.staticfiles import StaticFiles  # noqa: E402
+
+_dist = REPO_ROOT / "frontend" / "dist"
+if _dist.exists():
+    app.mount("/", StaticFiles(directory=str(_dist), html=True), name="spa")
