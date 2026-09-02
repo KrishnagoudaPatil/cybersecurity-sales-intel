@@ -57,10 +57,20 @@ The biggest source of error: mapping scanned hosts to the real company that owns
 11. **Incremental models** so re-runs process only new scan dates.
 
 ## AI-native layer
-12. **Realign the LLM feature to the real data.** The synthetic signal-classification eval
-    is now orphaned; repoint the LLM to a "why-now" security-risk narrative + outreach
-    grounded in real findings, with a fresh labelled eval set.
+12. ✅ **Done — Realign the LLM feature to the real data.** The evaluated feature is now
+    service-**banner classification** (6-way taxonomy) on real Shodan banners, plus a
+    findings-grounded "why-now" summary and outreach draft. The labelled eval set is 28
+    hand-labelled real banners (`evals/labelled_banners.jsonl`). Remaining: grow the set to
+    100+ with adversarial cases and run it against the live model (see #14).
 
 ## Product / app
-13. **Repoint the app to the Snowflake marts** (currently reads the old synthetic JSONL)
-    so the UI shows real scored prospects.
+13. ✅ **Done — Repoint the app to the Snowflake marts.** The API now reads the real scored
+    prospects through a repository with two backends (`DATA_BACKEND`): a local `data/marts`
+    snapshot by default, or live Snowflake queries. The old synthetic JSONL path is gone.
+
+## Follow-ups
+14. **Live-model eval run.** The 28-banner eval currently runs in version-aware mock mode;
+    run the same harness against the live model with a key and record real numbers.
+15. **Scoring weights as dbt `vars`.** The risk/fit weights in `fct_account_score.sql` are
+    literals; move them to `dbt_project.yml` vars so they're tunable without editing SQL
+    (also fixes the model comment that already claims they're vars). *Effort:* Trivial.
