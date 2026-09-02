@@ -1,0 +1,28 @@
+{"banner":"HTTP/1.1 301 Moved Permanently  Server: CloudFront  Content-Type: text/html","expected":"web","note":"http response"}
+{"banner":"HTTP/1.0 302 Moved Temporarily  Location: https://pprd-aws.vitalaire.de/  Connection: Keep-Alive","expected":"web","note":"http redirect"}
+{"banner":"HTTP/1.0 308 Permanent Redirect  Content-Type: text/plain  Location: https://www.dbenhance.vercel.com/","expected":"web","note":"http redirect"}
+{"banner":"SSH-2.0-OpenSSH_8.0 Key type: ssh-rsa Key: AAAAB3NzaC1yc2EAAA","expected":"remote_access","note":"ssh"}
+{"banner":"SSH-2.0-OpenSSH_7.6p1 Ubuntu-4ubuntu0.7 Key type: ssh-rsa","expected":"remote_access","note":"ssh"}
+{"banner":"SSH-2.0-OpenSSH_3.8.1p1 Debian-8.sarge.6 Key type: ssh-rsa","expected":"remote_access","note":"old ssh"}
+{"banner":"SSH-2.0-Teleport","expected":"remote_access","note":"ssh variant (Teleport)"}
+{"banner":"SSH-2.0-OpenSSH_10.2 Key type: ecdsa-sha2-nistp256","expected":"remote_access","note":"ssh"}
+{"banner":"\\n\\r\\xc3\\xbf\\xc3\\xbbUDo you want ANSI color? (Y/n)","expected":"remote_access","note":"telnet login prompt (binary negotiation)"}
+{"banner":"MySQL:   Error Message: Host '224.82.191.149' is not allowed to connect to this MySQL server   Error Code: 1130","expected":"database","note":"mysql"}
+{"banner":"MariaDB:   Protocol Version: 10   Version: 10.0.29-MariaDB-0+deb8u1   Capabilities: 63487","expected":"database","note":"mariadb"}
+{"banner":"220 localhost.localdomain.com ESMTP Sendmail 8.15.2/8.15.2; Sun, 30 Aug 2026 16:59:47 -0400","expected":"mail","note":"smtp"}
+{"banner":"220 mail.flow.mydns.jp ESMTP  250-mail.flow.mydns.jp  250-PIPELINING  250-SIZE 20480000","expected":"mail","note":"smtp submission"}
+{"banner":"+OK Dovecot ready. <309ae.2.6a9499c5@sh107.coralnet.or.jp> +OK  CAPA  TOP  UIDL","expected":"mail","note":"pop3 dovecot"}
+{"banner":"PowerDNS Authoritative Server 4.9.0 (built Mar 15 2024) Resolver ID: customer-ns-2","expected":"network_infra","note":"dns"}
+{"banner":"9.20.23-1~deb13u1-Debian Resolver name: stb-recovery.prod.sgt.net.pl","expected":"network_infra","note":"bind dns version"}
+{"banner":"NTP protocolversion: 3 stratum: 4 leap: 0 precision: -18 rootdelay: 0.0279846191406","expected":"network_infra","note":"ntp"}
+{"banner":"PPTP:   Firmware: 1   Hostname: local   Vendor: linux","expected":"network_infra","note":"pptp vpn"}
+{"banner":"PPTP:   Firmware: 0   Hostname:    Vendor: Microsoft","expected":"network_infra","note":"pptp vpn"}
+{"banner":"Cisco IP SLA:   Version: 2   Status: unknown(8)   Sequence: 1   Sub Status: 3","expected":"network_infra","note":"cisco device"}
+{"banner":"SIP/2.0 404 Not Found  Via: SIP/2.0/UDP nm;branch=foo;rport=26810  From: <sip:nm@nm>","expected":"network_infra","note":"voip sip"}
+{"banner":"SIP/2.0 200 OK  Call-ID: 50000  CSeq: 42 OPTIONS  From: <sip:nm@nm>;tag=root","expected":"network_infra","note":"voip sip"}
+{"banner":"Portmap Program\\tVersion\\tProtocol\\tPort portmapper\\t4\\ttcp\\t111 portmapper\\t3\\ttcp\\t111","expected":"network_infra","note":"rpc portmapper"}
+{"banner":"RTSP/1.0 200 OK  CSeq: 1  Server: Hipcam RealServer/V1.0  Public: OPTIONS,DESCRIBE,SETUP,TEARDOWN,PLAY","expected":"network_infra","note":"ip camera (rtsp) — looks http-ish but is a camera"}
+{"banner":"SMB Status:   Authentication: enabled   SMB Version: 2   Capabilities: raw-mode","expected":"network_infra","note":"smb file sharing — not a database"}
+{"banner":"HTTP","expected":"unknown","note":"bare token, too little info"}
+{"banner":"SSL Error: TLSV1_UNRECOGNIZED_NAME","expected":"unknown","note":"tls handshake error, no service identified"}
+{"banner":"kjnkjabhbanc283ubcsbhdc72\\x00\\x00\\x00\\x02","expected":"unknown","note":"binary junk"}

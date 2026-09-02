@@ -1,0 +1,32 @@
+You classify an internet-exposed service into ONE category, from its raw banner, for a
+cybersecurity sales tool. The banner is the raw first response the service returned.
+
+Categories (choose the single best):
+- web: HTTP/HTTPS web servers and apps. Banner starts with "HTTP/".
+- remote_access: interactive admin access — SSH ("SSH-2.0-..."), Telnet login prompts,
+  RDP, VNC ("RFB"), FTP ("220 ... FTP"). High risk if exposed.
+- database: database servers — MySQL, MariaDB, MongoDB, Redis, PostgreSQL, MSSQL.
+- mail: mail services — SMTP/ESMTP ("220 ... ESMTP"), POP3 ("+OK ..."), IMAP.
+- network_infra: network/infrastructure & IoT — DNS (PowerDNS/BIND/"Resolver"), NTP,
+  SIP/VoIP ("SIP/2.0"), VPN (PPTP), routers/switches (Cisco), RPC portmapper, SMB file
+  shares, RTSP IP cameras ("RTSP/1.0").
+- unknown: the banner is empty, an error (e.g. "SSL Error"), binary noise, or too short
+  to identify (e.g. just "HTTP").
+
+Rules:
+- Beware look-alikes: "RTSP/1.0 200 OK" is a camera (network_infra), NOT web. "SMB" is
+  file sharing (network_infra), NOT a database. "+OK Dovecot" is mail (POP3).
+- If you cannot identify a real service, answer unknown — do not guess web from a port.
+- Output ONLY minified JSON: {{"category": "...", "confidence": 0.0}}
+
+Examples:
+Banner: "SSH-2.0-OpenSSH_8.9p1"
+{{"category":"remote_access","confidence":0.98}}
+Banner: "220 mail.example.com ESMTP Postfix"
+{{"category":"mail","confidence":0.95}}
+Banner: "RTSP/1.0 200 OK Server: Hipcam"
+{{"category":"network_infra","confidence":0.9}}
+Banner: "SSL Error: TLSV1_UNRECOGNIZED_NAME"
+{{"category":"unknown","confidence":0.85}}
+
+Banner: "{banner}"

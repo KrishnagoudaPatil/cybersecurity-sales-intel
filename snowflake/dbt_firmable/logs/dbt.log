@@ -2122,3 +2122,1259 @@ having count(*) > 1
 [0m23:41:36.351182 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d85ca40>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c9a60f0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e1f6cf0>]}
 [0m23:41:36.351354 [debug] [MainThread]: Flushing usage events
 [0m23:41:38.055996 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m08:00:44.390538 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109d01eb0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10a75f110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10a75ecf0>]}
+
+
+============================== 08:00:44.393937 | 5829b6da-3f2c-46b2-91e9-cc83a69ddeb0 ==============================
+[0m08:00:44.393937 [info ] [MainThread]: Running with dbt=1.12.3
+[0m08:00:44.394182 [debug] [MainThread]: running dbt with arguments {'profiles_dir': '/Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable', 'write_json': 'True', 'static_parser': 'True', 'quiet': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'log_cache_events': 'False', 'hints_enabled': 'True', 'log_format': 'default', 'target_path': 'None', 'warn_error': 'None', 'use_colors': 'True', 'fail_fast': 'False', 'version_check': 'True', 'indirect_selection': 'eager', 'cache_selected_only': 'False', 'empty': 'False', 'introspect': 'True', 'printer_width': '80', 'no_print': 'None', 'debug': 'False', 'log_path': '/Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/logs', 'maximum_seed_size_mib': '1', 'invocation_command': 'dbt run', 'use_experimental_parser': 'False', 'partial_parse': 'True'}
+[0m08:00:44.616254 [debug] [MainThread]: Snowflake adapter: Setting snowflake.connector to ERROR (file logging only)
+[0m08:00:44.616483 [debug] [MainThread]: Snowflake adapter: Setting botocore to ERROR (file logging only)
+[0m08:00:44.616623 [debug] [MainThread]: Snowflake adapter: Setting boto3 to ERROR (file logging only)
+[0m08:00:44.705667 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1076dfce0>]}
+[0m08:00:44.726083 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c671310>]}
+[0m08:00:44.726648 [info ] [MainThread]: Registered adapter: snowflake=1.12.0
+[0m08:00:44.778058 [debug] [MainThread]: checksum: 8487e5174d5455efc4b928c07eb71a3e9e5630edadff0c191384eeb740f408b7, vars: {}, profile: firmable, target: dev, version: 1.12.3
+[0m08:00:44.863496 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 1 files changed.
+[0m08:00:44.863828 [debug] [MainThread]: Partial parsing: updated file: firmable://models/staging/stg_services.sql
+[0m08:00:45.063250 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d14f560>]}
+[0m08:00:45.139175 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/manifest.json
+[0m08:00:45.140868 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/semantic_manifest.json
+[0m08:00:45.153600 [debug] [MainThread]: Wrote artifact OsiDocument to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/osi_document.json
+[0m08:00:45.159351 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d0bcd40>]}
+[0m08:00:45.159526 [info ] [MainThread]: Found 5 models, 1 seed, 7 data tests, 1 source, 545 macros
+[0m08:00:45.159659 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d10a6c0>]}
+[0m08:00:45.160348 [info ] [MainThread]: 
+[0m08:00:45.160474 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m08:00:45.160569 [info ] [MainThread]: 
+[0m08:00:45.160745 [debug] [MainThread]: Acquiring new snowflake connection 'master'
+[0m08:00:45.162383 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_FIRMABLE'
+[0m08:00:45.166370 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_FIRMABLE'
+[0m08:00:45.166564 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_FIRMABLE'
+[0m08:00:45.168192 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE"
+[0m08:00:45.168384 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE"
+[0m08:00:45.168497 [debug] [ThreadPool]: On list_FIRMABLE: show terse schemas in database FIRMABLE
+    limit 10000
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE"} */
+[0m08:00:45.168655 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE"
+[0m08:00:45.168789 [debug] [ThreadPool]: On list_FIRMABLE: show terse schemas in database FIRMABLE
+    limit 10000
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE"} */
+[0m08:00:45.168899 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m08:00:45.169014 [debug] [ThreadPool]: On list_FIRMABLE: show terse schemas in database FIRMABLE
+    limit 10000
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE"} */
+[0m08:00:45.169121 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m08:00:45.169248 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m08:00:46.373351 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.204 seconds
+[0m08:00:46.376942 [debug] [ThreadPool]: On list_FIRMABLE: Close
+[0m08:00:46.382281 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.213 seconds
+[0m08:00:46.386455 [debug] [ThreadPool]: On list_FIRMABLE: Close
+[0m08:00:46.415063 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.246 seconds
+[0m08:00:46.416146 [debug] [ThreadPool]: On list_FIRMABLE: Close
+[0m08:00:46.601812 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_FIRMABLE, now list_FIRMABLE_dbt_seeds)
+[0m08:00:46.602449 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_FIRMABLE, now list_FIRMABLE_dbt_marts)
+[0m08:00:46.608106 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_FIRMABLE, now list_FIRMABLE_dbt_intermediate)
+[0m08:00:46.613166 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_seeds"
+[0m08:00:46.614090 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_marts"
+[0m08:00:46.614477 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_FIRMABLE_dbt_staging'
+[0m08:00:46.616748 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_intermediate"
+[0m08:00:46.617002 [debug] [ThreadPool]: On list_FIRMABLE_dbt_seeds: show objects in FIRMABLE.dbt_seeds
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_seeds"} */;
+[0m08:00:46.617203 [debug] [ThreadPool]: On list_FIRMABLE_dbt_marts: show objects in FIRMABLE.dbt_marts
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_marts"} */;
+[0m08:00:46.617946 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_staging"
+[0m08:00:46.618127 [debug] [ThreadPool]: On list_FIRMABLE_dbt_intermediate: show objects in FIRMABLE.dbt_intermediate
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_intermediate"} */;
+[0m08:00:46.618294 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m08:00:46.618444 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m08:00:46.618599 [debug] [ThreadPool]: On list_FIRMABLE_dbt_staging: show objects in FIRMABLE.dbt_staging
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_staging"} */;
+[0m08:00:46.618817 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m08:00:46.619155 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m08:00:47.565728 [debug] [ThreadPool]: SQL status: SUCCESS 1 in 0.947 seconds
+[0m08:00:47.567221 [debug] [ThreadPool]: SQL status: SUCCESS 2 in 0.949 seconds
+[0m08:00:47.577000 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_seeds"
+[0m08:00:47.580315 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_marts"
+[0m08:00:47.580805 [debug] [ThreadPool]: On list_FIRMABLE_dbt_seeds: show user functions in FIRMABLE.dbt_seeds
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_seeds"} */
+[0m08:00:47.581126 [debug] [ThreadPool]: On list_FIRMABLE_dbt_marts: show user functions in FIRMABLE.dbt_marts
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_marts"} */
+[0m08:00:47.674833 [debug] [ThreadPool]: SQL status: SUCCESS 2 in 1.056 seconds
+[0m08:00:47.679600 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_intermediate"
+[0m08:00:47.680303 [debug] [ThreadPool]: On list_FIRMABLE_dbt_intermediate: show user functions in FIRMABLE.dbt_intermediate
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_intermediate"} */
+[0m08:00:47.716925 [debug] [ThreadPool]: SQL status: SUCCESS 0 in 0.135 seconds
+[0m08:00:47.720104 [debug] [ThreadPool]: On list_FIRMABLE_dbt_seeds: Close
+[0m08:00:47.723348 [debug] [ThreadPool]: SQL status: SUCCESS 0 in 0.141 seconds
+[0m08:00:47.725694 [debug] [ThreadPool]: On list_FIRMABLE_dbt_marts: Close
+[0m08:00:47.729662 [debug] [ThreadPool]: SQL status: SUCCESS 1 in 1.110 seconds
+[0m08:00:47.733463 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_staging"
+[0m08:00:47.734175 [debug] [ThreadPool]: On list_FIRMABLE_dbt_staging: show user functions in FIRMABLE.dbt_staging
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_staging"} */
+[0m08:00:47.828924 [debug] [ThreadPool]: SQL status: SUCCESS 0 in 0.148 seconds
+[0m08:00:47.831763 [debug] [ThreadPool]: On list_FIRMABLE_dbt_intermediate: Close
+[0m08:00:47.861873 [debug] [ThreadPool]: SQL status: SUCCESS 0 in 0.127 seconds
+[0m08:00:47.864905 [debug] [ThreadPool]: On list_FIRMABLE_dbt_staging: Close
+[0m08:00:48.068880 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c4702c0>]}
+[0m08:00:48.070412 [debug] [Thread-9 (]: Began running node model.firmable.stg_services
+[0m08:00:48.070678 [info ] [Thread-9 (]: 1 of 5 START sql view model dbt_staging.stg_services ........................... [RUN]
+[0m08:00:48.070884 [debug] [Thread-9 (]: Re-using an available connection from the pool (formerly list_FIRMABLE_dbt_seeds, now model.firmable.stg_services)
+[0m08:00:48.071030 [debug] [Thread-9 (]: Began compiling node model.firmable.stg_services
+[0m08:00:48.074081 [debug] [Thread-9 (]: Writing injected SQL for node "model.firmable.stg_services"
+[0m08:00:48.074619 [debug] [Thread-9 (]: Began executing node model.firmable.stg_services
+[0m08:00:48.086749 [debug] [Thread-9 (]: Writing runtime sql for node "model.firmable.stg_services"
+[0m08:00:48.087761 [debug] [Thread-9 (]: Using snowflake connection "model.firmable.stg_services"
+[0m08:00:48.087975 [debug] [Thread-9 (]: On model.firmable.stg_services: create or replace   view FIRMABLE.dbt_staging.stg_services
+  
+  
+  
+  
+  as (
+    -- One clean, typed row per scanned service (IP:port observation).
+-- Unpacks the raw Shodan VARIANT. Kept as a view: cheap, always fresh.
+with raw as (
+    select v from FIRMABLE.RAW.scans
+)
+select
+    coalesce(v:ip_str::string, v:ipv6::string)         as ip,
+    (v:ipv6 is not null)                               as is_ipv6,
+    v:port::int                                        as port,
+    v:transport::string                                as transport,
+    v:asn::string                                      as asn,
+    v:org::string                                      as org,
+    v:isp::string                                      as isp,
+    v:_shodan:module::string                           as scan_module,
+    v:timestamp::timestamp_ntz                         as observed_at,
+
+    -- geo
+    v:location:country_code::string                    as country_code,
+    v:location:country_name::string                    as country_name,
+    v:location:city::string                            as city,
+
+    -- identity arrays (used downstream for entity resolution)
+    v:domains                                          as domains,
+    v:hostnames                                        as hostnames,
+    v:tags                                              as tags,
+
+    -- software fingerprint
+    v:product::string                                  as product,
+    v:version::string                                  as version,
+    v:cpe23                                            as cpe23,
+
+    -- http
+    v:http:status::int                                 as http_status,
+    v:http:headers                                     as http_headers,
+    v:http:title::string                               as http_title,
+
+    -- tls
+    (v:ssl is not null)                                as has_tls,
+    v:ssl:versions                                     as tls_versions,
+    v:ssl:cert:expired::boolean                        as cert_expired,
+
+    -- vulnerabilities: Shodan exposes both a top-level `vulns` object and opts.vulns[]
+    v:vulns                                            as vulns_obj,
+    v:opts:vulns                                        as opts_vulns,
+
+    -- raw banner (free text) — the LLM reads this when structured fields are absent
+    v:data::string                                     as banner,
+    v                                                  as raw
+from raw
+-- Drop honeypots (decoy hosts, not real prospects). COALESCE is essential: when a
+-- record has no `tags`, ARRAY_CONTAINS returns NULL, and `NOT NULL` is NULL, which a
+-- WHERE treats as false — silently dropping every untagged row. COALESCE(...,false)
+-- keeps those rows and drops only true honeypots.
+where not coalesce(array_contains('honeypot'::variant, v:tags), false)
+  )
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.stg_services"} */;
+[0m08:00:48.088169 [debug] [Thread-9 (]: Opening a new connection, currently in state closed
+[0m08:00:48.973156 [debug] [Thread-9 (]: SQL status: SUCCESS 1 in 0.885 seconds
+[0m08:00:48.990160 [debug] [Thread-9 (]: On model.firmable.stg_services: Close
+[0m08:00:49.588224 [debug] [Thread-9 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10959e750>]}
+[0m08:00:49.589889 [info ] [Thread-9 (]: 1 of 5 OK created sql view model dbt_staging.stg_services ...................... [[32mSUCCESS 1[0m in 1.51s]
+[0m08:00:49.590808 [debug] [Thread-9 (]: Finished running node model.firmable.stg_services
+[0m08:00:49.592257 [debug] [Thread-11 ]: Began running node model.firmable.int_service_signals
+[0m08:00:49.593031 [info ] [Thread-11 ]: 2 of 5 START sql view model dbt_intermediate.int_service_signals ............... [RUN]
+[0m08:00:49.593758 [debug] [Thread-11 ]: Re-using an available connection from the pool (formerly list_FIRMABLE_dbt_intermediate, now model.firmable.int_service_signals)
+[0m08:00:49.594169 [debug] [Thread-11 ]: Began compiling node model.firmable.int_service_signals
+[0m08:00:49.597812 [debug] [Thread-11 ]: Writing injected SQL for node "model.firmable.int_service_signals"
+[0m08:00:49.599669 [debug] [Thread-11 ]: Began executing node model.firmable.int_service_signals
+[0m08:00:49.603143 [debug] [Thread-11 ]: Writing runtime sql for node "model.firmable.int_service_signals"
+[0m08:00:49.605945 [debug] [Thread-11 ]: Using snowflake connection "model.firmable.int_service_signals"
+[0m08:00:49.606443 [debug] [Thread-11 ]: On model.firmable.int_service_signals: create or replace   view FIRMABLE.dbt_intermediate.int_service_signals
+  
+  
+  
+  
+  as (
+    -- Per-service security findings. This is the DETERMINISTIC signal layer (the "rules"
+-- half of the rule-vs-LLM split), expressed as SQL so it scales to the full 74GB.
+with s as (
+    select * from FIRMABLE.dbt_staging.stg_services
+),
+enriched as (
+    select
+        *,
+        -- CVE ids come from two Shodan locations; union + de-dupe.
+        array_distinct(array_cat(
+            coalesce(object_keys(vulns_obj), array_construct()),
+            coalesce(opts_vulns, array_construct())
+        ))                                                              as cve_ids,
+        -- lowercased, comma-joined header keys for case-insensitive presence checks
+        lower(coalesce(array_to_string(object_keys(http_headers), ','), '')) as hdr_keys
+    from s
+)
+select
+    ip, port, transport, org, isp, asn,
+    country_code, country_name, city,
+    domains, hostnames, tags, product, version, banner, observed_at,
+
+    array_size(cve_ids)                                         as cve_count,
+    (array_size(cve_ids) > 0)                                   as has_known_cve,
+    cve_ids,
+
+    array_contains('eol-product'::variant, tags)               as is_eol,
+    array_contains('self-signed'::variant, tags)               as is_self_signed,
+    array_contains('vpn'::variant, tags)                       as is_vpn,
+    array_contains('iot'::variant, tags)                       as is_iot,
+
+    -- exposed sensitive services
+    (array_contains('database'::variant, tags)
+        or port in (3306,5432,27017,6379,9200,1433,5984,11211,9042,7000,8123)
+        or product ilike any ('%mysql%','%mongo%','%redis%','%elastic%','%postgres%','%cassandra%')
+    )                                                          as exposed_database,
+    (port in (3389,23,5900,21))                                as exposed_remote_access,  -- RDP/telnet/VNC/FTP
+
+    -- weak transport security
+    has_tls,
+    (array_contains('TLSv1'::variant, tls_versions)
+        or array_contains('TLSv1.1'::variant, tls_versions)
+        or array_contains('SSLv3'::variant, tls_versions)
+        or array_contains('SSLv2'::variant, tls_versions))     as weak_tls,
+    coalesce(cert_expired, false)                              as cert_expired,
+
+    -- missing HTTP security headers (only meaningful for http services)
+    (http_status is not null)                                  as is_http,
+    iff(http_status is not null and hdr_keys not like '%strict-transport-security%', 1, 0) as missing_hsts,
+    iff(http_status is not null and hdr_keys not like '%content-security-policy%',   1, 0) as missing_csp,
+    iff(http_status is not null and hdr_keys not like '%x-frame-options%',           1, 0) as missing_xfo,
+    iff(http_status is not null and hdr_keys not like '%x-content-type-options%',    1, 0) as missing_xcto
+from enriched
+  )
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.int_service_signals"} */;
+[0m08:00:49.606847 [debug] [Thread-11 ]: Opening a new connection, currently in state closed
+[0m08:00:50.867893 [debug] [Thread-11 ]: SQL status: SUCCESS 1 in 1.261 seconds
+[0m08:00:50.873314 [debug] [Thread-11 ]: On model.firmable.int_service_signals: Close
+[0m08:00:51.053049 [debug] [Thread-11 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c9af1a0>]}
+[0m08:00:51.054770 [info ] [Thread-11 ]: 2 of 5 OK created sql view model dbt_intermediate.int_service_signals .......... [[32mSUCCESS 1[0m in 1.46s]
+[0m08:00:51.055697 [debug] [Thread-11 ]: Finished running node model.firmable.int_service_signals
+[0m08:00:51.056871 [debug] [Thread-10 ]: Began running node model.firmable.int_service_company
+[0m08:00:51.057587 [info ] [Thread-10 ]: 3 of 5 START sql view model dbt_intermediate.int_service_company ............... [RUN]
+[0m08:00:51.058291 [debug] [Thread-10 ]: Re-using an available connection from the pool (formerly list_FIRMABLE_dbt_marts, now model.firmable.int_service_company)
+[0m08:00:51.058738 [debug] [Thread-10 ]: Began compiling node model.firmable.int_service_company
+[0m08:00:51.062473 [debug] [Thread-10 ]: Writing injected SQL for node "model.firmable.int_service_company"
+[0m08:00:51.063911 [debug] [Thread-10 ]: Began executing node model.firmable.int_service_company
+[0m08:00:51.067846 [debug] [Thread-10 ]: Writing runtime sql for node "model.firmable.int_service_company"
+[0m08:00:51.070027 [debug] [Thread-10 ]: Using snowflake connection "model.firmable.int_service_company"
+[0m08:00:51.070431 [debug] [Thread-10 ]: On model.firmable.int_service_company: create or replace   view FIRMABLE.dbt_intermediate.int_service_company
+  
+  
+  
+  
+  as (
+    -- Entity resolution: attribute each scanned service to a single "company", proxied by
+-- its primary registrable domain. Infra/CDN/hosting domains are excluded (they are the
+-- host, not the customer). Services with no attributable domain drop out (unattributed).
+with svc as (
+    select * from FIRMABLE.dbt_intermediate.int_service_signals
+),
+exploded as (
+    select svc.*, d.value::string as domain
+    from svc, lateral flatten(input => svc.domains) d
+),
+filtered as (
+    select e.*
+    from exploded e
+    left join FIRMABLE.dbt_seeds.infra_domains infra
+      on lower(e.domain) = lower(infra.domain)
+    where e.domain is not null
+      and infra.domain is null
+),
+ranked as (
+    -- one domain per service: prefer the shortest (most registrable-looking) name
+    select *,
+           row_number() over (partition by ip, port order by length(domain), domain) as rn
+    from filtered
+)
+select * exclude (rn, domain, domains, hostnames, tags, cve_ids, banner, version),
+       domain as company_domain
+from ranked
+where rn = 1
+  )
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.int_service_company"} */;
+[0m08:00:51.070758 [debug] [Thread-10 ]: Opening a new connection, currently in state closed
+[0m08:00:52.146117 [debug] [Thread-10 ]: SQL status: SUCCESS 1 in 1.075 seconds
+[0m08:00:52.150566 [debug] [Thread-10 ]: On model.firmable.int_service_company: Close
+[0m08:00:52.702655 [debug] [Thread-10 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10cf42d20>]}
+[0m08:00:52.703524 [info ] [Thread-10 ]: 3 of 5 OK created sql view model dbt_intermediate.int_service_company .......... [[32mSUCCESS 1[0m in 1.64s]
+[0m08:00:52.704162 [debug] [Thread-10 ]: Finished running node model.firmable.int_service_company
+[0m08:00:52.704911 [debug] [Thread-12 ]: Began running node model.firmable.dim_company
+[0m08:00:52.705383 [debug] [Thread-11 ]: Began running node model.firmable.fct_account_score
+[0m08:00:52.705972 [info ] [Thread-12 ]: 4 of 5 START sql table model dbt_marts.dim_company ............................. [RUN]
+[0m08:00:52.706532 [info ] [Thread-11 ]: 5 of 5 START sql table model dbt_marts.fct_account_score ....................... [RUN]
+[0m08:00:52.707021 [debug] [Thread-12 ]: Re-using an available connection from the pool (formerly list_FIRMABLE_dbt_staging, now model.firmable.dim_company)
+[0m08:00:52.707436 [debug] [Thread-11 ]: Re-using an available connection from the pool (formerly model.firmable.int_service_signals, now model.firmable.fct_account_score)
+[0m08:00:52.707798 [debug] [Thread-12 ]: Began compiling node model.firmable.dim_company
+[0m08:00:52.708153 [debug] [Thread-11 ]: Began compiling node model.firmable.fct_account_score
+[0m08:00:52.710367 [debug] [Thread-12 ]: Writing injected SQL for node "model.firmable.dim_company"
+[0m08:00:52.712684 [debug] [Thread-11 ]: Writing injected SQL for node "model.firmable.fct_account_score"
+[0m08:00:52.713712 [debug] [Thread-11 ]: Began executing node model.firmable.fct_account_score
+[0m08:00:52.714091 [debug] [Thread-12 ]: Began executing node model.firmable.dim_company
+[0m08:00:52.735803 [debug] [Thread-12 ]: Writing runtime sql for node "model.firmable.dim_company"
+[0m08:00:52.736191 [debug] [Thread-11 ]: Writing runtime sql for node "model.firmable.fct_account_score"
+[0m08:00:52.738557 [debug] [Thread-11 ]: Using snowflake connection "model.firmable.fct_account_score"
+[0m08:00:52.739188 [debug] [Thread-12 ]: Using snowflake connection "model.firmable.dim_company"
+[0m08:00:52.739489 [debug] [Thread-11 ]: On model.firmable.fct_account_score: create or replace transient table FIRMABLE.dbt_marts.fct_account_score
+    
+    
+    
+    
+    
+
+    as (-- The scored prospect table: one row per company, blending observed security RISK
+-- ("need") with market FIT, into a 0-100 score and an A-D tier. All deterministic SQL,
+-- so ranking is auditable and reproducible. Weights are dbt vars (see dbt_project.yml).
+with s as (select * from FIRMABLE.dbt_intermediate.int_service_company),
+
+agg as (
+    select
+        company_domain,
+        count(distinct ip)                          as host_count,
+        count(*)                                    as service_count,
+        sum(cve_count)                              as total_cves,
+        count_if(has_known_cve)                     as services_with_cve,
+        count_if(is_eol)                            as eol_services,
+        count_if(is_self_signed)                    as self_signed_services,
+        count_if(exposed_database)                  as exposed_db_services,
+        count_if(exposed_remote_access)             as exposed_remote_services,
+        count_if(weak_tls)                          as weak_tls_services,
+        count_if(cert_expired)                      as expired_cert_services,
+        count_if(is_http)                           as http_services,
+        sum(missing_hsts + missing_csp + missing_xfo + missing_xcto) as missing_header_points,
+        mode(country_code)                          as primary_country
+    from s
+    group by 1
+),
+
+scored as (
+    select
+        *,
+        -- header hygiene: fraction of the 4 key headers missing across http services (0..1)
+        iff(http_services > 0, missing_header_points / (http_services * 4.0), 0) as missing_header_ratio,
+
+        -- NEED (0-100): direct, evidence-based security risk
+        least(100,
+              total_cves               * 15
+            + exposed_db_services       * 20
+            + exposed_remote_services   * 8
+            + eol_services              * 12
+            + self_signed_services      * 5
+            + weak_tls_services         * 5
+            + expired_cert_services     * 8
+            + iff(http_services > 0, missing_header_points / (http_services * 4.0) * 20, 0)
+        ) as risk_score
+    from agg
+),
+
+fit as (
+    select
+        *,
+        -- market fit: in target geography + company size proxy
+        100 * (
+            0.5 * iff(primary_country in ('AU','NZ'), 1.0, 0.5)
+          + 0.5 * case
+                    when host_count >= 50 then 1.0
+                    when host_count >= 10 then 0.9
+                    when host_count >= 3  then 0.6
+                    else 0.35
+                  end
+        ) as fit_score
+    from scored
+)
+
+select
+    company_domain,
+    host_count, service_count, primary_country,
+    total_cves, services_with_cve, exposed_db_services, exposed_remote_services,
+    eol_services, self_signed_services, weak_tls_services, expired_cert_services,
+    round(missing_header_ratio, 2)                          as missing_header_ratio,
+    round(risk_score, 1)                                    as risk_score,
+    round(fit_score, 1)                                     as fit_score,
+    -- blended: need weighted above fit (the point is who needs it NOW)
+    round(0.6 * risk_score + 0.4 * fit_score, 1)            as total_score,
+    case
+        when 0.6 * risk_score + 0.4 * fit_score >= 70 then 'A'
+        when 0.6 * risk_score + 0.4 * fit_score >= 50 then 'B'
+        when 0.6 * risk_score + 0.4 * fit_score >= 30 then 'C'
+        else 'D'
+    end                                                     as tier
+from fit
+    )
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.fct_account_score"} */;
+[0m08:00:52.739808 [debug] [Thread-12 ]: On model.firmable.dim_company: create or replace transient table FIRMABLE.dbt_marts.dim_company
+    
+    
+    
+    
+    
+
+    as (-- One row per resolved company (by primary domain), with firmographic-style aggregates
+-- derived purely from its observed internet footprint.
+with s as (select * from FIRMABLE.dbt_intermediate.int_service_company)
+select
+    company_domain,
+    count(distinct ip)                      as host_count,
+    count(*)                                as service_count,
+    count(distinct port)                    as distinct_ports,
+    mode(country_code)                      as primary_country,
+    mode(org)                               as primary_hosting_org,
+    max(observed_at)                        as last_seen,
+    case
+        when count(distinct ip) >= 50 then 'enterprise'
+        when count(distinct ip) >= 10 then 'mid'
+        when count(distinct ip) >= 3  then 'small'
+        else 'micro'
+    end                                     as size_band
+from s
+group by 1
+    )
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.dim_company"} */;
+[0m08:00:52.740028 [debug] [Thread-11 ]: Opening a new connection, currently in state closed
+[0m08:00:52.740220 [debug] [Thread-12 ]: Opening a new connection, currently in state closed
+[0m08:00:55.078002 [debug] [Thread-11 ]: SQL status: SUCCESS 157 in 2.337 seconds
+[0m08:00:55.089980 [debug] [Thread-11 ]: On model.firmable.fct_account_score: Close
+[0m08:00:55.132401 [debug] [Thread-12 ]: SQL status: SUCCESS 157 in 2.392 seconds
+[0m08:00:55.135551 [debug] [Thread-12 ]: On model.firmable.dim_company: Close
+[0m08:00:55.337173 [debug] [Thread-11 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10cf6b1a0>]}
+[0m08:00:55.338182 [debug] [Thread-12 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '5829b6da-3f2c-46b2-91e9-cc83a69ddeb0', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106c41e50>]}
+[0m08:00:55.339754 [info ] [Thread-11 ]: 5 of 5 OK created sql table model dbt_marts.fct_account_score .................. [[32mSUCCESS 157[0m in 2.63s]
+[0m08:00:55.340490 [info ] [Thread-12 ]: 4 of 5 OK created sql table model dbt_marts.dim_company ........................ [[32mSUCCESS 157[0m in 2.63s]
+[0m08:00:55.341168 [debug] [Thread-11 ]: Finished running node model.firmable.fct_account_score
+[0m08:00:55.341609 [debug] [Thread-12 ]: Finished running node model.firmable.dim_company
+[0m08:00:55.344727 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m08:00:55.345263 [debug] [MainThread]: Connection 'model.firmable.stg_services' was properly closed.
+[0m08:00:55.345550 [debug] [MainThread]: Connection 'model.firmable.int_service_company' was properly closed.
+[0m08:00:55.345845 [debug] [MainThread]: Connection 'model.firmable.fct_account_score' was properly closed.
+[0m08:00:55.346082 [debug] [MainThread]: Connection 'model.firmable.dim_company' was properly closed.
+[0m08:00:55.346726 [info ] [MainThread]: 
+[0m08:00:55.347100 [info ] [MainThread]: Finished running 2 table models, 3 view models in 0 hours 0 minutes and 10.19 seconds (10.19s).
+[0m08:00:55.348791 [debug] [MainThread]: Command end result
+[0m08:00:55.380198 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/manifest.json
+[0m08:00:55.382995 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/semantic_manifest.json
+[0m08:00:55.384523 [debug] [MainThread]: Wrote artifact OsiDocument to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/osi_document.json
+[0m08:00:55.388874 [debug] [MainThread]: Wrote artifact RunExecutionResult to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/run_results.json
+[0m08:00:55.389039 [info ] [MainThread]: 
+[0m08:00:55.389224 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m08:00:55.389364 [info ] [MainThread]: 
+[0m08:00:55.389536 [info ] [MainThread]: Done. PASS=5 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=5
+[0m08:00:55.392030 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": true, "command_wall_clock_time": 11.039151, "process_in_blocks": "0", "process_kernel_time": 0.317869, "process_mem_max_rss": "182370304", "process_out_blocks": "0", "process_user_time": 2.88195}
+[0m08:00:55.392765 [debug] [MainThread]: Command `dbt run` succeeded at 08:00:55.392716 after 11.04 seconds
+[0m08:00:55.393010 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10a75f0e0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d1e1d60>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10d12a990>]}
+[0m08:00:55.393174 [debug] [MainThread]: Flushing usage events
+[0m08:00:56.778338 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m08:00:57.937777 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10bcfa780>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10bd471a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10bd46d80>]}
+
+
+============================== 08:00:57.940762 | a695982f-ace4-458e-96dc-3814876c03a1 ==============================
+[0m08:00:57.940762 [info ] [MainThread]: Running with dbt=1.12.3
+[0m08:00:57.940976 [debug] [MainThread]: running dbt with arguments {'use_colors': 'True', 'cache_selected_only': 'False', 'empty': 'False', 'log_cache_events': 'False', 'no_print': 'None', 'hints_enabled': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'indirect_selection': 'eager', 'send_anonymous_usage_stats': 'True', 'static_parser': 'True', 'log_format': 'default', 'quiet': 'False', 'log_path': '/Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/logs', 'fail_fast': 'False', 'maximum_seed_size_mib': '1', 'invocation_command': 'dbt build', 'introspect': 'True', 'target_path': 'None', 'printer_width': '80', 'partial_parse': 'True', 'profiles_dir': '/Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable', 'warn_error': 'None', 'write_json': 'True', 'version_check': 'True', 'debug': 'False', 'use_experimental_parser': 'False'}
+[0m08:00:58.137322 [debug] [MainThread]: Snowflake adapter: Setting snowflake.connector to ERROR (file logging only)
+[0m08:00:58.137544 [debug] [MainThread]: Snowflake adapter: Setting botocore to ERROR (file logging only)
+[0m08:00:58.137662 [debug] [MainThread]: Snowflake adapter: Setting boto3 to ERROR (file logging only)
+[0m08:00:58.224161 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10abe63c0>]}
+[0m08:00:58.245625 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b33bb30>]}
+[0m08:00:58.246140 [info ] [MainThread]: Registered adapter: snowflake=1.12.0
+[0m08:00:58.299236 [debug] [MainThread]: checksum: 8487e5174d5455efc4b928c07eb71a3e9e5630edadff0c191384eeb740f408b7, vars: {}, profile: firmable, target: dev, version: 1.12.3
+[0m08:00:58.384121 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 0 files changed.
+[0m08:00:58.384348 [debug] [MainThread]: Nothing changed, skipping partial parsing.
+[0m08:00:58.384473 [debug] [MainThread]: Partial parsing enabled, no changes found, skipping parsing
+[0m08:00:58.388337 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10dfbd190>]}
+[0m08:00:58.449419 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/manifest.json
+[0m08:00:58.450730 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/semantic_manifest.json
+[0m08:00:58.460848 [debug] [MainThread]: Wrote artifact OsiDocument to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/osi_document.json
+[0m08:00:58.471857 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e4731a0>]}
+[0m08:00:58.472058 [info ] [MainThread]: Found 5 models, 1 seed, 7 data tests, 1 source, 545 macros
+[0m08:00:58.472971 [info ] [MainThread]: 
+[0m08:00:58.473114 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m08:00:58.473224 [info ] [MainThread]: 
+[0m08:00:58.473436 [debug] [MainThread]: Acquiring new snowflake connection 'master'
+[0m08:00:58.475178 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_FIRMABLE'
+[0m08:00:58.480667 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_FIRMABLE'
+[0m08:00:58.480908 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_FIRMABLE'
+[0m08:00:58.481527 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_FIRMABLE'
+[0m08:00:58.483218 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE"
+[0m08:00:58.483391 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE"
+[0m08:00:58.483509 [debug] [ThreadPool]: On list_FIRMABLE: show terse schemas in database FIRMABLE
+    limit 10000
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE"} */
+[0m08:00:58.483646 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE"
+[0m08:00:58.483802 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE"
+[0m08:00:58.483922 [debug] [ThreadPool]: On list_FIRMABLE: show terse schemas in database FIRMABLE
+    limit 10000
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE"} */
+[0m08:00:58.484037 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m08:00:58.484143 [debug] [ThreadPool]: On list_FIRMABLE: show terse schemas in database FIRMABLE
+    limit 10000
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE"} */
+[0m08:00:58.484274 [debug] [ThreadPool]: On list_FIRMABLE: show terse schemas in database FIRMABLE
+    limit 10000
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE"} */
+[0m08:00:58.484415 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m08:00:58.484547 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m08:00:58.484653 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m08:00:59.598323 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.114 seconds
+[0m08:00:59.600955 [debug] [ThreadPool]: On list_FIRMABLE: Close
+[0m08:00:59.633656 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.149 seconds
+[0m08:00:59.636435 [debug] [ThreadPool]: On list_FIRMABLE: Close
+[0m08:00:59.637707 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.153 seconds
+[0m08:00:59.639713 [debug] [ThreadPool]: On list_FIRMABLE: Close
+[0m08:00:59.640503 [debug] [ThreadPool]: SQL status: SUCCESS 8 in 1.156 seconds
+[0m08:00:59.644067 [debug] [ThreadPool]: On list_FIRMABLE: Close
+[0m08:00:59.844610 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_FIRMABLE, now list_FIRMABLE_dbt_seeds)
+[0m08:00:59.845390 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_FIRMABLE, now list_FIRMABLE_dbt_staging)
+[0m08:00:59.852570 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_FIRMABLE, now list_FIRMABLE_dbt_marts)
+[0m08:00:59.861403 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_seeds"
+[0m08:00:59.863177 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_staging"
+[0m08:00:59.863631 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_FIRMABLE, now list_FIRMABLE_dbt_intermediate)
+[0m08:00:59.865002 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_marts"
+[0m08:00:59.865296 [debug] [ThreadPool]: On list_FIRMABLE_dbt_seeds: show objects in FIRMABLE.dbt_seeds
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_seeds"} */;
+[0m08:00:59.865547 [debug] [ThreadPool]: On list_FIRMABLE_dbt_staging: show objects in FIRMABLE.dbt_staging
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_staging"} */;
+[0m08:00:59.866463 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_intermediate"
+[0m08:00:59.866683 [debug] [ThreadPool]: On list_FIRMABLE_dbt_marts: show objects in FIRMABLE.dbt_marts
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_marts"} */;
+[0m08:00:59.866897 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m08:00:59.867082 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m08:00:59.867273 [debug] [ThreadPool]: On list_FIRMABLE_dbt_intermediate: show objects in FIRMABLE.dbt_intermediate
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_intermediate"} */;
+[0m08:00:59.867461 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m08:00:59.867905 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m08:01:00.896695 [debug] [ThreadPool]: SQL status: SUCCESS 2 in 1.029 seconds
+[0m08:01:00.897879 [debug] [ThreadPool]: SQL status: SUCCESS 1 in 1.031 seconds
+[0m08:01:00.905269 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_intermediate"
+[0m08:01:00.908776 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_seeds"
+[0m08:01:00.909324 [debug] [ThreadPool]: On list_FIRMABLE_dbt_intermediate: show user functions in FIRMABLE.dbt_intermediate
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_intermediate"} */
+[0m08:01:00.909637 [debug] [ThreadPool]: On list_FIRMABLE_dbt_seeds: show user functions in FIRMABLE.dbt_seeds
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_seeds"} */
+[0m08:01:01.035780 [debug] [ThreadPool]: SQL status: SUCCESS 0 in 0.125 seconds
+[0m08:01:01.037851 [debug] [ThreadPool]: On list_FIRMABLE_dbt_seeds: Close
+[0m08:01:01.046360 [debug] [ThreadPool]: SQL status: SUCCESS 0 in 0.136 seconds
+[0m08:01:01.048503 [debug] [ThreadPool]: On list_FIRMABLE_dbt_intermediate: Close
+[0m08:01:01.630752 [debug] [ThreadPool]: SQL status: SUCCESS 1 in 1.763 seconds
+[0m08:01:01.635134 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_staging"
+[0m08:01:01.635767 [debug] [ThreadPool]: On list_FIRMABLE_dbt_staging: show user functions in FIRMABLE.dbt_staging
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_staging"} */
+[0m08:01:01.804272 [debug] [ThreadPool]: SQL status: SUCCESS 0 in 0.168 seconds
+[0m08:01:01.806335 [debug] [ThreadPool]: On list_FIRMABLE_dbt_staging: Close
+[0m08:01:01.824556 [debug] [ThreadPool]: SQL status: SUCCESS 2 in 1.957 seconds
+[0m08:01:01.828470 [debug] [ThreadPool]: Using snowflake connection "list_FIRMABLE_dbt_marts"
+[0m08:01:01.829050 [debug] [ThreadPool]: On list_FIRMABLE_dbt_marts: show user functions in FIRMABLE.dbt_marts
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "connection_name": "list_FIRMABLE_dbt_marts"} */
+[0m08:01:01.971593 [debug] [ThreadPool]: SQL status: SUCCESS 0 in 0.142 seconds
+[0m08:01:01.974035 [debug] [ThreadPool]: On list_FIRMABLE_dbt_marts: Close
+[0m08:01:02.168214 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e820170>]}
+[0m08:01:02.171761 [debug] [Thread-10 ]: Began running node model.firmable.stg_services
+[0m08:01:02.172194 [debug] [Thread-11 ]: Began running node seed.firmable.infra_domains
+[0m08:01:02.172737 [info ] [Thread-10 ]: 1 of 13 START sql view model dbt_staging.stg_services .......................... [RUN]
+[0m08:01:02.173269 [info ] [Thread-11 ]: 2 of 13 START seed file dbt_seeds.infra_domains ................................ [RUN]
+[0m08:01:02.173746 [debug] [Thread-10 ]: Re-using an available connection from the pool (formerly list_FIRMABLE_dbt_seeds, now model.firmable.stg_services)
+[0m08:01:02.174121 [debug] [Thread-11 ]: Re-using an available connection from the pool (formerly list_FIRMABLE_dbt_staging, now seed.firmable.infra_domains)
+[0m08:01:02.174476 [debug] [Thread-10 ]: Began compiling node model.firmable.stg_services
+[0m08:01:02.174753 [debug] [Thread-11 ]: Began compiling node seed.firmable.infra_domains
+[0m08:01:02.182151 [debug] [Thread-10 ]: Writing injected SQL for node "model.firmable.stg_services"
+[0m08:01:02.182684 [debug] [Thread-11 ]: Began executing node seed.firmable.infra_domains
+[0m08:01:02.197563 [debug] [Thread-10 ]: Began executing node model.firmable.stg_services
+[0m08:01:02.221646 [debug] [Thread-10 ]: Writing runtime sql for node "model.firmable.stg_services"
+[0m08:01:02.224010 [debug] [Thread-11 ]: Using snowflake connection "seed.firmable.infra_domains"
+[0m08:01:02.224260 [debug] [Thread-11 ]: On seed.firmable.infra_domains: BEGIN
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "seed.firmable.infra_domains"} */
+[0m08:01:02.224449 [debug] [Thread-11 ]: Opening a new connection, currently in state closed
+[0m08:01:02.225998 [debug] [Thread-10 ]: Using snowflake connection "model.firmable.stg_services"
+[0m08:01:02.290199 [debug] [Thread-10 ]: On model.firmable.stg_services: create or replace   view FIRMABLE.dbt_staging.stg_services
+  
+  
+  
+  
+  as (
+    -- One clean, typed row per scanned service (IP:port observation).
+-- Unpacks the raw Shodan VARIANT. Kept as a view: cheap, always fresh.
+with raw as (
+    select v from FIRMABLE.RAW.scans
+)
+select
+    coalesce(v:ip_str::string, v:ipv6::string)         as ip,
+    (v:ipv6 is not null)                               as is_ipv6,
+    v:port::int                                        as port,
+    v:transport::string                                as transport,
+    v:asn::string                                      as asn,
+    v:org::string                                      as org,
+    v:isp::string                                      as isp,
+    v:_shodan:module::string                           as scan_module,
+    v:timestamp::timestamp_ntz                         as observed_at,
+
+    -- geo
+    v:location:country_code::string                    as country_code,
+    v:location:country_name::string                    as country_name,
+    v:location:city::string                            as city,
+
+    -- identity arrays (used downstream for entity resolution)
+    v:domains                                          as domains,
+    v:hostnames                                        as hostnames,
+    v:tags                                              as tags,
+
+    -- software fingerprint
+    v:product::string                                  as product,
+    v:version::string                                  as version,
+    v:cpe23                                            as cpe23,
+
+    -- http
+    v:http:status::int                                 as http_status,
+    v:http:headers                                     as http_headers,
+    v:http:title::string                               as http_title,
+
+    -- tls
+    (v:ssl is not null)                                as has_tls,
+    v:ssl:versions                                     as tls_versions,
+    v:ssl:cert:expired::boolean                        as cert_expired,
+
+    -- vulnerabilities: Shodan exposes both a top-level `vulns` object and opts.vulns[]
+    v:vulns                                            as vulns_obj,
+    v:opts:vulns                                        as opts_vulns,
+
+    -- raw banner (free text) — the LLM reads this when structured fields are absent
+    v:data::string                                     as banner,
+    v                                                  as raw
+from raw
+-- Drop honeypots (decoy hosts, not real prospects). COALESCE is essential: when a
+-- record has no `tags`, ARRAY_CONTAINS returns NULL, and `NOT NULL` is NULL, which a
+-- WHERE treats as false — silently dropping every untagged row. COALESCE(...,false)
+-- keeps those rows and drops only true honeypots.
+where not coalesce(array_contains('honeypot'::variant, v:tags), false)
+  )
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.stg_services"} */;
+[0m08:01:02.290759 [debug] [Thread-10 ]: Opening a new connection, currently in state closed
+[0m08:01:02.938622 [debug] [Thread-11 ]: SQL status: SUCCESS 1 in 0.714 seconds
+[0m08:01:02.940139 [debug] [Thread-11 ]: Using snowflake connection "seed.firmable.infra_domains"
+[0m08:01:02.940502 [debug] [Thread-11 ]: On seed.firmable.infra_domains: insert overwrite into FIRMABLE.dbt_seeds.infra_domains (domain) values
+            (%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s)
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "seed.firmable.infra_domains"} */...
+[0m08:01:03.118927 [debug] [Thread-10 ]: SQL status: SUCCESS 1 in 0.828 seconds
+[0m08:01:03.144441 [debug] [Thread-10 ]: On model.firmable.stg_services: Close
+[0m08:01:03.331877 [debug] [Thread-10 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e842150>]}
+[0m08:01:03.333073 [info ] [Thread-10 ]: 1 of 13 OK created sql view model dbt_staging.stg_services ..................... [[32mSUCCESS 1[0m in 1.16s]
+[0m08:01:03.333711 [debug] [Thread-10 ]: Finished running node model.firmable.stg_services
+[0m08:01:03.334511 [debug] [Thread-13 ]: Began running node test.firmable.not_null_stg_services_ip.8138937272
+[0m08:01:03.335011 [debug] [Thread-12 ]: Began running node test.firmable.not_null_stg_services_port.9bd90b647a
+[0m08:01:03.335426 [info ] [Thread-13 ]: 3 of 13 START test not_null_stg_services_ip .................................... [RUN]
+[0m08:01:03.335846 [info ] [Thread-12 ]: 4 of 13 START test not_null_stg_services_port .................................. [RUN]
+[0m08:01:03.336384 [debug] [Thread-13 ]: Re-using an available connection from the pool (formerly list_FIRMABLE_dbt_intermediate, now test.firmable.not_null_stg_services_ip.8138937272)
+[0m08:01:03.336812 [debug] [Thread-12 ]: Re-using an available connection from the pool (formerly list_FIRMABLE_dbt_marts, now test.firmable.not_null_stg_services_port.9bd90b647a)
+[0m08:01:03.337660 [debug] [Thread-13 ]: Began compiling node test.firmable.not_null_stg_services_ip.8138937272
+[0m08:01:03.338555 [debug] [Thread-11 ]: SQL status: SUCCESS 32 in 0.398 seconds
+[0m08:01:03.338872 [debug] [Thread-12 ]: Began compiling node test.firmable.not_null_stg_services_port.9bd90b647a
+[0m08:01:03.354005 [debug] [Thread-13 ]: Writing injected SQL for node "test.firmable.not_null_stg_services_ip.8138937272"
+[0m08:01:03.354567 [debug] [Thread-11 ]: Using snowflake connection "seed.firmable.infra_domains"
+[0m08:01:03.359420 [debug] [Thread-12 ]: Writing injected SQL for node "test.firmable.not_null_stg_services_port.9bd90b647a"
+[0m08:01:03.359787 [debug] [Thread-11 ]: On seed.firmable.infra_domains: COMMIT
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "seed.firmable.infra_domains"} */
+[0m08:01:03.360802 [debug] [Thread-13 ]: Began executing node test.firmable.not_null_stg_services_ip.8138937272
+[0m08:01:03.361145 [debug] [Thread-12 ]: Began executing node test.firmable.not_null_stg_services_port.9bd90b647a
+[0m08:01:03.372626 [debug] [Thread-13 ]: Writing runtime sql for node "test.firmable.not_null_stg_services_ip.8138937272"
+[0m08:01:03.374371 [debug] [Thread-12 ]: Writing runtime sql for node "test.firmable.not_null_stg_services_port.9bd90b647a"
+[0m08:01:03.375233 [debug] [Thread-13 ]: Using snowflake connection "test.firmable.not_null_stg_services_ip.8138937272"
+[0m08:01:03.375602 [debug] [Thread-12 ]: Using snowflake connection "test.firmable.not_null_stg_services_port.9bd90b647a"
+[0m08:01:03.375793 [debug] [Thread-13 ]: On test.firmable.not_null_stg_services_ip.8138937272: select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select ip
+from FIRMABLE.dbt_staging.stg_services
+where ip is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "test.firmable.not_null_stg_services_ip.8138937272"} */
+[0m08:01:03.375978 [debug] [Thread-12 ]: On test.firmable.not_null_stg_services_port.9bd90b647a: select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select port
+from FIRMABLE.dbt_staging.stg_services
+where port is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "test.firmable.not_null_stg_services_port.9bd90b647a"} */
+[0m08:01:03.376147 [debug] [Thread-13 ]: Opening a new connection, currently in state closed
+[0m08:01:03.376306 [debug] [Thread-12 ]: Opening a new connection, currently in state closed
+[0m08:01:03.785965 [debug] [Thread-11 ]: SQL status: SUCCESS 1 in 0.426 seconds
+[0m08:01:03.794324 [debug] [Thread-11 ]: Writing runtime SQL for node "seed.firmable.infra_domains"
+[0m08:01:03.799520 [debug] [Thread-11 ]: On seed.firmable.infra_domains: Close
+[0m08:01:04.035214 [debug] [Thread-11 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10825a030>]}
+[0m08:01:04.036526 [info ] [Thread-11 ]: 2 of 13 OK loaded seed file dbt_seeds.infra_domains ............................ [[32mINSERT 32[0m in 1.86s]
+[0m08:01:04.037366 [debug] [Thread-11 ]: Finished running node seed.firmable.infra_domains
+[0m08:01:04.171530 [debug] [Thread-12 ]: SQL status: SUCCESS 1 in 0.795 seconds
+[0m08:01:04.172851 [debug] [Thread-13 ]: SQL status: SUCCESS 1 in 0.797 seconds
+[0m08:01:04.180100 [debug] [Thread-12 ]: On test.firmable.not_null_stg_services_port.9bd90b647a: Close
+[0m08:01:04.183068 [debug] [Thread-13 ]: On test.firmable.not_null_stg_services_ip.8138937272: Close
+[0m08:01:04.382487 [info ] [Thread-13 ]: 3 of 13 PASS not_null_stg_services_ip .......................................... [[32mPASS[0m in 1.05s]
+[0m08:01:04.383753 [debug] [Thread-13 ]: Finished running node test.firmable.not_null_stg_services_ip.8138937272
+[0m08:01:04.390883 [info ] [Thread-12 ]: 4 of 13 PASS not_null_stg_services_port ........................................ [[32mPASS[0m in 1.05s]
+[0m08:01:04.391693 [debug] [Thread-12 ]: Finished running node test.firmable.not_null_stg_services_port.9bd90b647a
+[0m08:01:04.392666 [debug] [Thread-10 ]: Began running node model.firmable.int_service_signals
+[0m08:01:04.393716 [info ] [Thread-10 ]: 5 of 13 START sql view model dbt_intermediate.int_service_signals .............. [RUN]
+[0m08:01:04.394326 [debug] [Thread-10 ]: Re-using an available connection from the pool (formerly model.firmable.stg_services, now model.firmable.int_service_signals)
+[0m08:01:04.394729 [debug] [Thread-10 ]: Began compiling node model.firmable.int_service_signals
+[0m08:01:04.397479 [debug] [Thread-10 ]: Writing injected SQL for node "model.firmable.int_service_signals"
+[0m08:01:04.398440 [debug] [Thread-10 ]: Began executing node model.firmable.int_service_signals
+[0m08:01:04.401016 [debug] [Thread-10 ]: Writing runtime sql for node "model.firmable.int_service_signals"
+[0m08:01:04.403140 [debug] [Thread-10 ]: Using snowflake connection "model.firmable.int_service_signals"
+[0m08:01:04.403587 [debug] [Thread-10 ]: On model.firmable.int_service_signals: create or replace   view FIRMABLE.dbt_intermediate.int_service_signals
+  
+  
+  
+  
+  as (
+    -- Per-service security findings. This is the DETERMINISTIC signal layer (the "rules"
+-- half of the rule-vs-LLM split), expressed as SQL so it scales to the full 74GB.
+with s as (
+    select * from FIRMABLE.dbt_staging.stg_services
+),
+enriched as (
+    select
+        *,
+        -- CVE ids come from two Shodan locations; union + de-dupe.
+        array_distinct(array_cat(
+            coalesce(object_keys(vulns_obj), array_construct()),
+            coalesce(opts_vulns, array_construct())
+        ))                                                              as cve_ids,
+        -- lowercased, comma-joined header keys for case-insensitive presence checks
+        lower(coalesce(array_to_string(object_keys(http_headers), ','), '')) as hdr_keys
+    from s
+)
+select
+    ip, port, transport, org, isp, asn,
+    country_code, country_name, city,
+    domains, hostnames, tags, product, version, banner, observed_at,
+
+    array_size(cve_ids)                                         as cve_count,
+    (array_size(cve_ids) > 0)                                   as has_known_cve,
+    cve_ids,
+
+    array_contains('eol-product'::variant, tags)               as is_eol,
+    array_contains('self-signed'::variant, tags)               as is_self_signed,
+    array_contains('vpn'::variant, tags)                       as is_vpn,
+    array_contains('iot'::variant, tags)                       as is_iot,
+
+    -- exposed sensitive services
+    (array_contains('database'::variant, tags)
+        or port in (3306,5432,27017,6379,9200,1433,5984,11211,9042,7000,8123)
+        or product ilike any ('%mysql%','%mongo%','%redis%','%elastic%','%postgres%','%cassandra%')
+    )                                                          as exposed_database,
+    (port in (3389,23,5900,21))                                as exposed_remote_access,  -- RDP/telnet/VNC/FTP
+
+    -- weak transport security
+    has_tls,
+    (array_contains('TLSv1'::variant, tls_versions)
+        or array_contains('TLSv1.1'::variant, tls_versions)
+        or array_contains('SSLv3'::variant, tls_versions)
+        or array_contains('SSLv2'::variant, tls_versions))     as weak_tls,
+    coalesce(cert_expired, false)                              as cert_expired,
+
+    -- missing HTTP security headers (only meaningful for http services)
+    (http_status is not null)                                  as is_http,
+    iff(http_status is not null and hdr_keys not like '%strict-transport-security%', 1, 0) as missing_hsts,
+    iff(http_status is not null and hdr_keys not like '%content-security-policy%',   1, 0) as missing_csp,
+    iff(http_status is not null and hdr_keys not like '%x-frame-options%',           1, 0) as missing_xfo,
+    iff(http_status is not null and hdr_keys not like '%x-content-type-options%',    1, 0) as missing_xcto
+from enriched
+  )
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.int_service_signals"} */;
+[0m08:01:04.403972 [debug] [Thread-10 ]: Opening a new connection, currently in state closed
+[0m08:01:05.373247 [debug] [Thread-10 ]: SQL status: SUCCESS 1 in 0.969 seconds
+[0m08:01:05.377799 [debug] [Thread-10 ]: On model.firmable.int_service_signals: Close
+[0m08:01:05.598786 [debug] [Thread-10 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10bc98ec0>]}
+[0m08:01:05.600293 [info ] [Thread-10 ]: 5 of 13 OK created sql view model dbt_intermediate.int_service_signals ......... [[32mSUCCESS 1[0m in 1.20s]
+[0m08:01:05.601244 [debug] [Thread-10 ]: Finished running node model.firmable.int_service_signals
+[0m08:01:05.602275 [debug] [Thread-13 ]: Began running node model.firmable.int_service_company
+[0m08:01:05.602883 [info ] [Thread-13 ]: 6 of 13 START sql view model dbt_intermediate.int_service_company .............. [RUN]
+[0m08:01:05.603501 [debug] [Thread-13 ]: Re-using an available connection from the pool (formerly test.firmable.not_null_stg_services_ip.8138937272, now model.firmable.int_service_company)
+[0m08:01:05.603905 [debug] [Thread-13 ]: Began compiling node model.firmable.int_service_company
+[0m08:01:05.606887 [debug] [Thread-13 ]: Writing injected SQL for node "model.firmable.int_service_company"
+[0m08:01:05.607739 [debug] [Thread-13 ]: Began executing node model.firmable.int_service_company
+[0m08:01:05.610616 [debug] [Thread-13 ]: Writing runtime sql for node "model.firmable.int_service_company"
+[0m08:01:05.611952 [debug] [Thread-13 ]: Using snowflake connection "model.firmable.int_service_company"
+[0m08:01:05.612303 [debug] [Thread-13 ]: On model.firmable.int_service_company: create or replace   view FIRMABLE.dbt_intermediate.int_service_company
+  
+  
+  
+  
+  as (
+    -- Entity resolution: attribute each scanned service to a single "company", proxied by
+-- its primary registrable domain. Infra/CDN/hosting domains are excluded (they are the
+-- host, not the customer). Services with no attributable domain drop out (unattributed).
+with svc as (
+    select * from FIRMABLE.dbt_intermediate.int_service_signals
+),
+exploded as (
+    select svc.*, d.value::string as domain
+    from svc, lateral flatten(input => svc.domains) d
+),
+filtered as (
+    select e.*
+    from exploded e
+    left join FIRMABLE.dbt_seeds.infra_domains infra
+      on lower(e.domain) = lower(infra.domain)
+    where e.domain is not null
+      and infra.domain is null
+),
+ranked as (
+    -- one domain per service: prefer the shortest (most registrable-looking) name
+    select *,
+           row_number() over (partition by ip, port order by length(domain), domain) as rn
+    from filtered
+)
+select * exclude (rn, domain, domains, hostnames, tags, cve_ids, banner, version),
+       domain as company_domain
+from ranked
+where rn = 1
+  )
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.int_service_company"} */;
+[0m08:01:05.612626 [debug] [Thread-13 ]: Opening a new connection, currently in state closed
+[0m08:01:06.601913 [debug] [Thread-13 ]: SQL status: SUCCESS 1 in 0.989 seconds
+[0m08:01:06.606526 [debug] [Thread-13 ]: On model.firmable.int_service_company: Close
+[0m08:01:06.792105 [debug] [Thread-13 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e303aa0>]}
+[0m08:01:06.793489 [info ] [Thread-13 ]: 6 of 13 OK created sql view model dbt_intermediate.int_service_company ......... [[32mSUCCESS 1[0m in 1.19s]
+[0m08:01:06.794330 [debug] [Thread-13 ]: Finished running node model.firmable.int_service_company
+[0m08:01:06.795298 [debug] [Thread-11 ]: Began running node model.firmable.dim_company
+[0m08:01:06.795776 [debug] [Thread-10 ]: Began running node model.firmable.fct_account_score
+[0m08:01:06.796460 [info ] [Thread-11 ]: 7 of 13 START sql table model dbt_marts.dim_company ............................ [RUN]
+[0m08:01:06.797039 [info ] [Thread-10 ]: 8 of 13 START sql table model dbt_marts.fct_account_score ...................... [RUN]
+[0m08:01:06.797594 [debug] [Thread-11 ]: Re-using an available connection from the pool (formerly seed.firmable.infra_domains, now model.firmable.dim_company)
+[0m08:01:06.798027 [debug] [Thread-10 ]: Re-using an available connection from the pool (formerly model.firmable.int_service_signals, now model.firmable.fct_account_score)
+[0m08:01:06.798388 [debug] [Thread-11 ]: Began compiling node model.firmable.dim_company
+[0m08:01:06.798697 [debug] [Thread-10 ]: Began compiling node model.firmable.fct_account_score
+[0m08:01:06.801523 [debug] [Thread-11 ]: Writing injected SQL for node "model.firmable.dim_company"
+[0m08:01:06.804005 [debug] [Thread-10 ]: Writing injected SQL for node "model.firmable.fct_account_score"
+[0m08:01:06.805053 [debug] [Thread-11 ]: Began executing node model.firmable.dim_company
+[0m08:01:06.805459 [debug] [Thread-10 ]: Began executing node model.firmable.fct_account_score
+[0m08:01:06.825748 [debug] [Thread-11 ]: Writing runtime sql for node "model.firmable.dim_company"
+[0m08:01:06.826903 [debug] [Thread-10 ]: Writing runtime sql for node "model.firmable.fct_account_score"
+[0m08:01:06.828807 [debug] [Thread-10 ]: Using snowflake connection "model.firmable.fct_account_score"
+[0m08:01:06.829425 [debug] [Thread-11 ]: Using snowflake connection "model.firmable.dim_company"
+[0m08:01:06.829710 [debug] [Thread-10 ]: On model.firmable.fct_account_score: create or replace transient table FIRMABLE.dbt_marts.fct_account_score
+    
+    
+    
+    
+    
+
+    as (-- The scored prospect table: one row per company, blending observed security RISK
+-- ("need") with market FIT, into a 0-100 score and an A-D tier. All deterministic SQL,
+-- so ranking is auditable and reproducible. Weights are dbt vars (see dbt_project.yml).
+with s as (select * from FIRMABLE.dbt_intermediate.int_service_company),
+
+agg as (
+    select
+        company_domain,
+        count(distinct ip)                          as host_count,
+        count(*)                                    as service_count,
+        sum(cve_count)                              as total_cves,
+        count_if(has_known_cve)                     as services_with_cve,
+        count_if(is_eol)                            as eol_services,
+        count_if(is_self_signed)                    as self_signed_services,
+        count_if(exposed_database)                  as exposed_db_services,
+        count_if(exposed_remote_access)             as exposed_remote_services,
+        count_if(weak_tls)                          as weak_tls_services,
+        count_if(cert_expired)                      as expired_cert_services,
+        count_if(is_http)                           as http_services,
+        sum(missing_hsts + missing_csp + missing_xfo + missing_xcto) as missing_header_points,
+        mode(country_code)                          as primary_country
+    from s
+    group by 1
+),
+
+scored as (
+    select
+        *,
+        -- header hygiene: fraction of the 4 key headers missing across http services (0..1)
+        iff(http_services > 0, missing_header_points / (http_services * 4.0), 0) as missing_header_ratio,
+
+        -- NEED (0-100): direct, evidence-based security risk
+        least(100,
+              total_cves               * 15
+            + exposed_db_services       * 20
+            + exposed_remote_services   * 8
+            + eol_services              * 12
+            + self_signed_services      * 5
+            + weak_tls_services         * 5
+            + expired_cert_services     * 8
+            + iff(http_services > 0, missing_header_points / (http_services * 4.0) * 20, 0)
+        ) as risk_score
+    from agg
+),
+
+fit as (
+    select
+        *,
+        -- market fit: in target geography + company size proxy
+        100 * (
+            0.5 * iff(primary_country in ('AU','NZ'), 1.0, 0.5)
+          + 0.5 * case
+                    when host_count >= 50 then 1.0
+                    when host_count >= 10 then 0.9
+                    when host_count >= 3  then 0.6
+                    else 0.35
+                  end
+        ) as fit_score
+    from scored
+)
+
+select
+    company_domain,
+    host_count, service_count, primary_country,
+    total_cves, services_with_cve, exposed_db_services, exposed_remote_services,
+    eol_services, self_signed_services, weak_tls_services, expired_cert_services,
+    round(missing_header_ratio, 2)                          as missing_header_ratio,
+    round(risk_score, 1)                                    as risk_score,
+    round(fit_score, 1)                                     as fit_score,
+    -- blended: need weighted above fit (the point is who needs it NOW)
+    round(0.6 * risk_score + 0.4 * fit_score, 1)            as total_score,
+    case
+        when 0.6 * risk_score + 0.4 * fit_score >= 70 then 'A'
+        when 0.6 * risk_score + 0.4 * fit_score >= 50 then 'B'
+        when 0.6 * risk_score + 0.4 * fit_score >= 30 then 'C'
+        else 'D'
+    end                                                     as tier
+from fit
+    )
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.fct_account_score"} */;
+[0m08:01:06.830008 [debug] [Thread-11 ]: On model.firmable.dim_company: create or replace transient table FIRMABLE.dbt_marts.dim_company
+    
+    
+    
+    
+    
+
+    as (-- One row per resolved company (by primary domain), with firmographic-style aggregates
+-- derived purely from its observed internet footprint.
+with s as (select * from FIRMABLE.dbt_intermediate.int_service_company)
+select
+    company_domain,
+    count(distinct ip)                      as host_count,
+    count(*)                                as service_count,
+    count(distinct port)                    as distinct_ports,
+    mode(country_code)                      as primary_country,
+    mode(org)                               as primary_hosting_org,
+    max(observed_at)                        as last_seen,
+    case
+        when count(distinct ip) >= 50 then 'enterprise'
+        when count(distinct ip) >= 10 then 'mid'
+        when count(distinct ip) >= 3  then 'small'
+        else 'micro'
+    end                                     as size_band
+from s
+group by 1
+    )
+
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "model.firmable.dim_company"} */;
+[0m08:01:06.830224 [debug] [Thread-10 ]: Opening a new connection, currently in state closed
+[0m08:01:06.830403 [debug] [Thread-11 ]: Opening a new connection, currently in state closed
+[0m08:01:08.648165 [debug] [Thread-11 ]: SQL status: SUCCESS 157 in 1.817 seconds
+[0m08:01:08.653040 [debug] [Thread-11 ]: On model.firmable.dim_company: Close
+[0m08:01:08.789755 [debug] [Thread-10 ]: SQL status: SUCCESS 157 in 1.959 seconds
+[0m08:01:08.794865 [debug] [Thread-10 ]: On model.firmable.fct_account_score: Close
+[0m08:01:08.843994 [debug] [Thread-11 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b139af0>]}
+[0m08:01:08.845286 [info ] [Thread-11 ]: 7 of 13 OK created sql table model dbt_marts.dim_company ....................... [[32mSUCCESS 157[0m in 2.05s]
+[0m08:01:08.846070 [debug] [Thread-11 ]: Finished running node model.firmable.dim_company
+[0m08:01:08.846942 [debug] [Thread-13 ]: Began running node test.firmable.not_null_dim_company_company_domain.d899546436
+[0m08:01:08.847442 [debug] [Thread-12 ]: Began running node test.firmable.unique_dim_company_company_domain.7e87da9fba
+[0m08:01:08.847898 [info ] [Thread-13 ]: 9 of 13 START test not_null_dim_company_company_domain ......................... [RUN]
+[0m08:01:08.848360 [info ] [Thread-12 ]: 10 of 13 START test unique_dim_company_company_domain .......................... [RUN]
+[0m08:01:08.848957 [debug] [Thread-13 ]: Re-using an available connection from the pool (formerly model.firmable.int_service_company, now test.firmable.not_null_dim_company_company_domain.d899546436)
+[0m08:01:08.849389 [debug] [Thread-12 ]: Re-using an available connection from the pool (formerly test.firmable.not_null_stg_services_port.9bd90b647a, now test.firmable.unique_dim_company_company_domain.7e87da9fba)
+[0m08:01:08.849764 [debug] [Thread-13 ]: Began compiling node test.firmable.not_null_dim_company_company_domain.d899546436
+[0m08:01:08.850096 [debug] [Thread-12 ]: Began compiling node test.firmable.unique_dim_company_company_domain.7e87da9fba
+[0m08:01:08.866036 [debug] [Thread-12 ]: Writing injected SQL for node "test.firmable.unique_dim_company_company_domain.7e87da9fba"
+[0m08:01:08.868133 [debug] [Thread-13 ]: Writing injected SQL for node "test.firmable.not_null_dim_company_company_domain.d899546436"
+[0m08:01:08.869113 [debug] [Thread-12 ]: Began executing node test.firmable.unique_dim_company_company_domain.7e87da9fba
+[0m08:01:08.869398 [debug] [Thread-13 ]: Began executing node test.firmable.not_null_dim_company_company_domain.d899546436
+[0m08:01:08.871055 [debug] [Thread-12 ]: Writing runtime sql for node "test.firmable.unique_dim_company_company_domain.7e87da9fba"
+[0m08:01:08.872539 [debug] [Thread-13 ]: Writing runtime sql for node "test.firmable.not_null_dim_company_company_domain.d899546436"
+[0m08:01:08.873472 [debug] [Thread-12 ]: Using snowflake connection "test.firmable.unique_dim_company_company_domain.7e87da9fba"
+[0m08:01:08.873920 [debug] [Thread-13 ]: Using snowflake connection "test.firmable.not_null_dim_company_company_domain.d899546436"
+[0m08:01:08.874169 [debug] [Thread-12 ]: On test.firmable.unique_dim_company_company_domain.7e87da9fba: select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+select
+    company_domain as unique_field,
+    count(*) as n_records
+
+from FIRMABLE.dbt_marts.dim_company
+where company_domain is not null
+group by company_domain
+having count(*) > 1
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "test.firmable.unique_dim_company_company_domain.7e87da9fba"} */
+[0m08:01:08.874423 [debug] [Thread-13 ]: On test.firmable.not_null_dim_company_company_domain.d899546436: select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select company_domain
+from FIRMABLE.dbt_marts.dim_company
+where company_domain is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "test.firmable.not_null_dim_company_company_domain.d899546436"} */
+[0m08:01:08.874660 [debug] [Thread-12 ]: Opening a new connection, currently in state closed
+[0m08:01:08.874862 [debug] [Thread-13 ]: Opening a new connection, currently in state closed
+[0m08:01:09.100462 [debug] [Thread-10 ]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': 'a695982f-ace4-458e-96dc-3814876c03a1', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e64b620>]}
+[0m08:01:09.100822 [info ] [Thread-10 ]: 8 of 13 OK created sql table model dbt_marts.fct_account_score ................. [[32mSUCCESS 157[0m in 2.30s]
+[0m08:01:09.101075 [debug] [Thread-10 ]: Finished running node model.firmable.fct_account_score
+[0m08:01:09.101327 [debug] [Thread-11 ]: Began running node test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6
+[0m08:01:09.101482 [debug] [Thread-10 ]: Began running node test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d
+[0m08:01:09.101622 [info ] [Thread-11 ]: 11 of 13 START test accepted_values_fct_account_score_tier__A__B__C__D ......... [RUN]
+[0m08:01:09.101774 [info ] [Thread-10 ]: 12 of 13 START test not_null_fct_account_score_company_domain .................. [RUN]
+[0m08:01:09.101950 [debug] [Thread-11 ]: Re-using an available connection from the pool (formerly model.firmable.dim_company, now test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6)
+[0m08:01:09.102101 [debug] [Thread-10 ]: Re-using an available connection from the pool (formerly model.firmable.fct_account_score, now test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d)
+[0m08:01:09.102237 [debug] [Thread-11 ]: Began compiling node test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6
+[0m08:01:09.102362 [debug] [Thread-10 ]: Began compiling node test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d
+[0m08:01:09.110018 [debug] [Thread-10 ]: Writing injected SQL for node "test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d"
+[0m08:01:09.114660 [debug] [Thread-11 ]: Writing injected SQL for node "test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6"
+[0m08:01:09.115014 [debug] [Thread-10 ]: Began executing node test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d
+[0m08:01:09.115149 [debug] [Thread-11 ]: Began executing node test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6
+[0m08:01:09.115872 [debug] [Thread-10 ]: Writing runtime sql for node "test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d"
+[0m08:01:09.116599 [debug] [Thread-11 ]: Writing runtime sql for node "test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6"
+[0m08:01:09.117188 [debug] [Thread-10 ]: Using snowflake connection "test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d"
+[0m08:01:09.117512 [debug] [Thread-11 ]: Using snowflake connection "test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6"
+[0m08:01:09.117684 [debug] [Thread-10 ]: On test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d: select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select company_domain
+from FIRMABLE.dbt_marts.fct_account_score
+where company_domain is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d"} */
+[0m08:01:09.117835 [debug] [Thread-11 ]: On test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6: select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with all_values as (
+
+    select
+        tier as value_field,
+        count(*) as n_records
+
+    from FIRMABLE.dbt_marts.fct_account_score
+    group by tier
+
+)
+
+select *
+from all_values
+where value_field not in (
+    'A','B','C','D'
+)
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6"} */
+[0m08:01:09.117964 [debug] [Thread-10 ]: Opening a new connection, currently in state closed
+[0m08:01:09.118082 [debug] [Thread-11 ]: Opening a new connection, currently in state closed
+[0m08:01:09.723871 [debug] [Thread-12 ]: SQL status: SUCCESS 1 in 0.849 seconds
+[0m08:01:09.726385 [debug] [Thread-12 ]: On test.firmable.unique_dim_company_company_domain.7e87da9fba: Close
+[0m08:01:09.752433 [debug] [Thread-13 ]: SQL status: SUCCESS 1 in 0.877 seconds
+[0m08:01:09.756190 [debug] [Thread-13 ]: On test.firmable.not_null_dim_company_company_domain.d899546436: Close
+[0m08:01:09.853895 [debug] [Thread-11 ]: SQL status: SUCCESS 1 in 0.735 seconds
+[0m08:01:09.857304 [debug] [Thread-11 ]: On test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6: Close
+[0m08:01:09.869928 [debug] [Thread-10 ]: SQL status: SUCCESS 1 in 0.752 seconds
+[0m08:01:09.872753 [debug] [Thread-10 ]: On test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d: Close
+[0m08:01:09.964785 [info ] [Thread-12 ]: 10 of 13 PASS unique_dim_company_company_domain ................................ [[32mPASS[0m in 1.12s]
+[0m08:01:09.965792 [info ] [Thread-13 ]: 9 of 13 PASS not_null_dim_company_company_domain ............................... [[32mPASS[0m in 1.12s]
+[0m08:01:09.966727 [debug] [Thread-12 ]: Finished running node test.firmable.unique_dim_company_company_domain.7e87da9fba
+[0m08:01:09.967260 [debug] [Thread-13 ]: Finished running node test.firmable.not_null_dim_company_company_domain.d899546436
+[0m08:01:09.967751 [debug] [Thread-12 ]: Began running node test.firmable.unique_fct_account_score_company_domain.126f098f2e
+[0m08:01:09.968363 [info ] [Thread-12 ]: 13 of 13 START test unique_fct_account_score_company_domain .................... [RUN]
+[0m08:01:09.968912 [debug] [Thread-12 ]: Re-using an available connection from the pool (formerly test.firmable.unique_dim_company_company_domain.7e87da9fba, now test.firmable.unique_fct_account_score_company_domain.126f098f2e)
+[0m08:01:09.969295 [debug] [Thread-12 ]: Began compiling node test.firmable.unique_fct_account_score_company_domain.126f098f2e
+[0m08:01:09.979270 [debug] [Thread-12 ]: Writing injected SQL for node "test.firmable.unique_fct_account_score_company_domain.126f098f2e"
+[0m08:01:09.980184 [debug] [Thread-12 ]: Began executing node test.firmable.unique_fct_account_score_company_domain.126f098f2e
+[0m08:01:09.981970 [debug] [Thread-12 ]: Writing runtime sql for node "test.firmable.unique_fct_account_score_company_domain.126f098f2e"
+[0m08:01:09.982783 [debug] [Thread-12 ]: Using snowflake connection "test.firmable.unique_fct_account_score_company_domain.126f098f2e"
+[0m08:01:09.983053 [debug] [Thread-12 ]: On test.firmable.unique_fct_account_score_company_domain.126f098f2e: select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+select
+    company_domain as unique_field,
+    count(*) as n_records
+
+from FIRMABLE.dbt_marts.fct_account_score
+where company_domain is not null
+group by company_domain
+having count(*) > 1
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+/* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "firmable", "target_name": "dev", "node_id": "test.firmable.unique_fct_account_score_company_domain.126f098f2e"} */
+[0m08:01:09.983297 [debug] [Thread-12 ]: Opening a new connection, currently in state closed
+[0m08:01:10.057629 [info ] [Thread-11 ]: 11 of 13 PASS accepted_values_fct_account_score_tier__A__B__C__D ............... [[32mPASS[0m in 0.96s]
+[0m08:01:10.057868 [debug] [Thread-11 ]: Finished running node test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6
+[0m08:01:10.085631 [info ] [Thread-10 ]: 12 of 13 PASS not_null_fct_account_score_company_domain ........................ [[32mPASS[0m in 0.98s]
+[0m08:01:10.085883 [debug] [Thread-10 ]: Finished running node test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d
+[0m08:01:10.630514 [debug] [Thread-12 ]: SQL status: SUCCESS 1 in 0.647 seconds
+[0m08:01:10.634567 [debug] [Thread-12 ]: On test.firmable.unique_fct_account_score_company_domain.126f098f2e: Close
+[0m08:01:10.831511 [info ] [Thread-12 ]: 13 of 13 PASS unique_fct_account_score_company_domain .......................... [[32mPASS[0m in 0.86s]
+[0m08:01:10.832607 [debug] [Thread-12 ]: Finished running node test.firmable.unique_fct_account_score_company_domain.126f098f2e
+[0m08:01:10.834546 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m08:01:10.835070 [debug] [MainThread]: Connection 'test.firmable.not_null_fct_account_score_company_domain.6f1b1f0c0d' was properly closed.
+[0m08:01:10.835410 [debug] [MainThread]: Connection 'test.firmable.accepted_values_fct_account_score_tier__A__B__C__D.052c23e0a6' was properly closed.
+[0m08:01:10.835686 [debug] [MainThread]: Connection 'test.firmable.unique_fct_account_score_company_domain.126f098f2e' was properly closed.
+[0m08:01:10.835949 [debug] [MainThread]: Connection 'test.firmable.not_null_dim_company_company_domain.d899546436' was properly closed.
+[0m08:01:10.836381 [info ] [MainThread]: 
+[0m08:01:10.836755 [info ] [MainThread]: Finished running 1 seed, 2 table models, 7 data tests, 3 view models in 0 hours 0 minutes and 12.36 seconds (12.36s).
+[0m08:01:10.838937 [debug] [MainThread]: Command end result
+[0m08:01:10.868907 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/manifest.json
+[0m08:01:10.870630 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/semantic_manifest.json
+[0m08:01:10.872033 [debug] [MainThread]: Wrote artifact OsiDocument to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/osi_document.json
+[0m08:01:10.875967 [debug] [MainThread]: Wrote artifact RunExecutionResult to /Users/krishna/Krishna/firmable-sales-intel/snowflake/dbt_firmable/target/run_results.json
+[0m08:01:10.876153 [info ] [MainThread]: 
+[0m08:01:10.876346 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m08:01:10.876492 [info ] [MainThread]: 
+[0m08:01:10.876645 [info ] [MainThread]: Done. PASS=13 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=13
+[0m08:01:10.878904 [debug] [MainThread]: Resource report: {"command_name": "build", "command_success": true, "command_wall_clock_time": 12.977092, "process_in_blocks": "0", "process_kernel_time": 0.308606, "process_mem_max_rss": "190676992", "process_out_blocks": "0", "process_user_time": 3.953453}
+[0m08:01:10.879215 [debug] [MainThread]: Command `dbt build` succeeded at 08:01:10.879169 after 12.98 seconds
+[0m08:01:10.879400 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e47f1d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e4b5610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10bdc49e0>]}
+[0m08:01:10.879572 [debug] [MainThread]: Flushing usage events
+[0m08:01:12.179333 [debug] [MainThread]: An error was encountered while trying to flush usage events

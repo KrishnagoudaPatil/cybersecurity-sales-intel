@@ -1,0 +1,10 @@
+You are a cybersecurity sales analyst. Write a crisp "why now" brief (2-3 sentences) for
+this company, so a rep instantly sees the security exposure we observed on their internet
+footprint and what to lead with. Ground every claim in the findings — do NOT invent facts.
+
+Company: {company_domain}   Country: {country}
+Internet footprint: {host_count} hosts, {service_count} services
+Observed exposure:
+{findings}
+
+Lead with the most serious finding. Be specific and concrete.

@@ -1,59 +1,52 @@
 ---
 name: outreach-draft
-version: 1.0.0
-description: Draft a short, personalised first-touch cybersecurity sales email for an ANZ account, grounded in its detected buying signals.
+version: 2.0.0
+description: Draft a short, responsible first-touch cybersecurity email for a company, grounded ONLY in the security exposure observed on its internet footprint.
 owner: sales-intelligence
-inputs: [company_record, account_score]
+inputs: [account_findings]
 outputs: [outreach_draft]
 models:
   judge: claude-sonnet-5                 # low volume, tone/judgement -> strong model
 prompts:
-  - outreach_draft (active: v1)          # prompts/outreach_draft/v1.txt
-depends_on: [account-scoring]
+  - outreach_draft (active: v2)          # prompts/outreach_draft/v2.txt
+depends_on: [dbt marts: fct_account_score]
 ---
 
 # outreach-draft
 
-Writes a <=120-word, Australian-English cold email that leads with the single
-strongest buying signal for an account.
+Writes a <=110-word, responsible cold email that leads with the single most serious
+security exposure observed for an account.
 
 ## When to use (trigger conditions)
 - A rep opens an A/B-tier account and wants a first-touch email to start from.
-- Batch-drafting opener emails for a filtered worklist.
+- Batch-drafting openers for a filtered worklist.
 
-Do NOT use for scoring or prioritisation (that's `account-scoring`), and do NOT
-auto-send — output is a **draft for human review** (see Guardrails).
+Do NOT auto-send — output is a **draft for human review** (see Guardrails).
 
-## Inputs
-- `Company` record + the `AccountScore` from `account-scoring` (for its `signals`).
-
-## Outputs
-```json
-{ "company_id":"AU00042", "subject":"...", "body":"...",
-  "prompt_version":"v1", "model":"claude-sonnet-5" }
-```
+## Inputs / outputs
+- Input: an `account_findings` dict shaped like a `FCT_ACCOUNT_SCORE` row
+  (`company_domain`, `total_cves`, `exposed_db_services`, `eol_services`,
+  `missing_header_ratio`, `risk_score`, `tier`, …).
+- Output: `{ company_domain, subject, body, prompt_version, model }`.
 
 ## Procedure
-1. Build a signals block from `account_score.signals` (strongest first).
-2. Render `prompts/outreach_draft/v1.txt` with company + regime + signals.
-3. Call the strong model (temperature 0.5) via the traced client.
-4. Split `Subject:` line from body; return structured draft.
+1. Build a findings block (strongest exposure first) from the mart row.
+2. Render `prompts/outreach_draft/v2.txt` (strong model, temp 0.5) via the traced client.
+3. Split `Subject:` from body; return the structured draft.
 
 ## Worked example (invocation)
-```bash
-curl -X POST "localhost:8000/companies/AU00042/outreach"
-```
 ```python
 from app.llm.judgement import outreach_draft
-draft = outreach_draft(company, score)
+outreach_draft({"company_domain":"acme.io","total_cves":9,"tier":"A", ...})
 ```
 
 ## Guardrails
-- Never fabricate facts beyond the provided signals (prompt enforces this).
-- Human-in-the-loop: drafts are surfaced in the UI for edit-then-send, never sent
-  automatically.
-- Cost: ~1 strong-model call per draft; drafts are generated on demand, not for the
-  whole book — keep it that way (see docs/architecture.md cost model).
+- **Responsible disclosure:** never include specific IPs or exploit detail; tone is
+  helpful, not alarmist or threatening (enforced in the prompt).
+- Never fabricate beyond the provided findings.
+- Human-in-the-loop: drafts are surfaced for edit-then-send, never sent automatically.
+- Cost: one strong-model call per draft; generate on demand, not across the whole book.
 
 ## Changelog
-- 1.0.0 — initial version.
+- 2.0.0 — repointed from synthetic firmographic signals to real observed security findings.
+- 1.0.0 — initial (synthetic).

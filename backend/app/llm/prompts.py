@@ -12,9 +12,9 @@ from app.config import PROMPTS_DIR
 
 # Which prompt version is live for each feature. Bump here to promote a new version.
 ACTIVE = {
-    "signal_classification": "v2",
-    "account_summary": "v1",
-    "outreach_draft": "v1",
+    "service_classification": "v2",   # core evaluated feature: banner -> service type
+    "account_risk_summary": "v1",     # judgement: "why now" security narrative
+    "outreach_draft": "v2",           # judgement: findings-grounded outreach
 }
 
 

@@ -47,5 +47,8 @@ select
     v:data::string                                     as banner,
     v                                                  as raw
 from raw
--- Drop honeypots: decoy hosts, not real prospects.
-where not array_contains('honeypot'::variant, v:tags)
+-- Drop honeypots (decoy hosts, not real prospects). COALESCE is essential: when a
+-- record has no `tags`, ARRAY_CONTAINS returns NULL, and `NOT NULL` is NULL, which a
+-- WHERE treats as false — silently dropping every untagged row. COALESCE(...,false)
+-- keeps those rows and drops only true honeypots.
+where not coalesce(array_contains('honeypot'::variant, v:tags), false)

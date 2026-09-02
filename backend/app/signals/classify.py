@@ -1,14 +1,13 @@
-"""LLM signal classification — the core evaluated AI feature.
+"""LLM service classification — the core EVALUATED AI feature (real-data version).
 
-Turns one free-text company event into a structured cybersecurity buying signal.
-Uses the CHEAP model (high volume, one call per event). Every call is traced via
-app.llm.client.call.
+Reads a raw service `banner` (free text) and classifies the service into one category.
+This is the genuine rule-vs-LLM boundary on the Shodan data: the dbt SQL rules classify
+a service when structured fields (product / cpe / port / tags) are clear; the LLM reads
+the messy banner when they are absent. Every call is traced via app.llm.client.call.
 
-Mock mode: a deterministic keyword classifier stands in so evals run without an API
-key. It is VERSION-AWARE — it simulates the weaker behaviour of the naive v1 prompt
-vs. the improved v2 prompt, so the eval harness reports a real v1->v2 delta offline.
-In live mode the actual model produces the difference. This is documented in
-evals/results.md so the numbers are never mistaken for live model metrics.
+Mock mode: a deterministic, VERSION-AWARE keyword classifier stands in so evals run with
+no API key. v1 simulates a naive prompt (no network-infra knowledge); v2 simulates the
+improved prompt. This yields a real v1->v2 delta offline; live mode uses the real model.
 """
 from __future__ import annotations
 
@@ -18,84 +17,66 @@ import re
 from app.config import get_settings
 from app.llm.client import call
 from app.llm.prompts import render
-from app.models import Signal
 
-FEATURE = "signal_classification"
+FEATURE = "service_classification"
 
-VALID_TYPES = {
-    "breach_incident", "cloud_migration", "leadership_change",
-    "funding_round", "compliance_pressure", "none",
-}
+CLASSES = {"web", "remote_access", "database", "mail", "network_infra", "unknown"}
 
-# v2 = the improved prompt: full definitions, breach precedence, compliance-aware.
+# v2 = improved prompt: full taxonomy incl. network_infra + look-alike handling.
+# Ordered by precedence.
 _RULES_V2 = [
-    ("breach_incident", r"breach|ransomware|compromis|data (was )?exposed|exposed after|hack|cyber ?attack|oaic"),
-    ("compliance_pressure", r"cps 234|soci|pci-?dss|privacy act|essential eight|\bism\b|compliance obligation"),
-    ("leadership_change", r"new (chief|cio|cto|head of it|head of security)|appointed a new|named a new|joined from"),
-    ("cloud_migration", r"cloud|on-?prem|digital transformation|migrat"),
-    ("funding_round", r"funding|series [a-e]|investment|raised|capital"),
+    ("unknown",        r"^ssl error|unrecognized_name|^\W*$"),
+    ("web",            r"^http/"),
+    ("mail",           r"esmtp|\bsmtp\b|^\+ok|\bimap\b|dovecot"),
+    ("remote_access",  r"^ssh-2\.0|^\bftp\b|220.*\bftp\b|ansi color|^rfb |telnet"),
+    ("database",       r"mysql|mariadb|mongodb|redis|postgres|mssql|\bsql server\b"),
+    ("network_infra",  r"rtsp/|sip/2\.0|powerdns|resolver|\bbind\b|named|ntp |stratum|pptp|cisco|portmap|\bsmb\b|dns"),
 ]
 
-# v1 = the naive prompt: no definitions/precedence. Simulated weaknesses:
-#   * only catches the literal word "breach"/"ransomware" (misses OAIC / "exposed" / "compromised")
-#   * has NO concept of compliance_pressure (labels those "none")
-#   * evaluates rules in a fixed order without breach precedence
+# v1 = naive prompt: only the "obvious" services, NO network-infra concept, weak on
+# POP mail / telnet / bare tokens (simulated weaknesses).
 _RULES_V1 = [
-    ("breach_incident", r"\bbreach\b|ransomware"),
-    ("leadership_change", r"new (cio|cto)|appointed a new"),
-    ("cloud_migration", r"cloud|migrat"),
-    ("funding_round", r"funding|series [a-e]"),
+    ("web",            r"http"),
+    ("remote_access",  r"ssh"),
+    ("database",       r"mysql|mariadb"),
+    ("mail",           r"smtp"),
 ]
 
 
-def _mock_for_version(prompt: str):
-    # v2 prompt contains the definitions block; v1 does not.
-    return _RULES_V2 if "Signal types and definitions" in prompt else _RULES_V1
+def _rules_for(prompt: str):
+    return _RULES_V2 if "Categories (choose the single best)" in prompt else _RULES_V1
 
 
 def _mock_classify(prompt: str) -> str:
-    rules = _mock_for_version(prompt)
-    m = re.findall(r'Event:\s*"([^"]*)"', prompt)
-    event = m[-1] if m else prompt
-    low = event.lower()
-    for stype, pattern in rules:
-        if re.search(pattern, low):
-            return json.dumps({"type": stype, "confidence": 0.9, "evidence": event[:80]})
-    return json.dumps({"type": "none", "confidence": 0.8, "evidence": "no cyber-relevant signal"})
+    rules = _rules_for(prompt)
+    m = re.findall(r'Banner:\s*"([^"]*)"', prompt)
+    banner = (m[-1] if m else prompt).lower()
+    for cat, pattern in rules:
+        if re.search(pattern, banner):
+            return json.dumps({"category": cat, "confidence": 0.9})
+    return json.dumps({"category": "unknown", "confidence": 0.6})
 
 
 def _parse(text: str) -> dict:
     text = text.strip()
     try:
         obj = json.loads(text)
-        stype = str(obj.get("type", "none")).strip()
+        cat = str(obj.get("category", "unknown")).strip()
         conf = float(obj.get("confidence", 0.5))
-        ev = str(obj.get("evidence", ""))
-    except Exception:  # noqa: BLE001
-        stype = text.split()[0].strip().strip('".,') if text else "none"
-        conf, ev = 0.5, text[:80]
-    if stype not in VALID_TYPES:
-        stype = "none"
-    return {"type": stype, "confidence": max(0.0, min(1.0, conf)), "evidence": ev}
+    except Exception:  # noqa: BLE001 — v1 may return a bare label
+        cat = text.split()[0].strip().strip('".,').lower() if text else "unknown"
+        conf = 0.5
+    if cat not in CLASSES:
+        cat = "unknown"
+    return {"category": cat, "confidence": max(0.0, min(1.0, conf))}
 
 
-def classify_event(event: str, prompt_version: str | None = None) -> dict:
-    prompt, version = render(FEATURE, version=prompt_version, event=event)
-    model = get_settings().model_classify
+def classify_banner(banner: str, prompt_version: str | None = None) -> dict:
+    """Classify one service banner. Returns {category, confidence}. Traced + costed."""
+    prompt, version = render(FEATURE, version=prompt_version, banner=banner)
     result = call(
-        feature=FEATURE, prompt=prompt, prompt_version=version, model=model,
-        max_tokens=120, temperature=0.0, mock_fn=_mock_classify,
+        feature=FEATURE, prompt=prompt, prompt_version=version,
+        model=get_settings().model_classify, max_tokens=40, temperature=0.0,
+        mock_fn=_mock_classify,
     )
     return _parse(result.text)
-
-
-def llm_signals(events: list[str], prompt_version: str | None = None) -> list[Signal]:
-    out: list[Signal] = []
-    for ev in events:
-        r = classify_event(ev, prompt_version=prompt_version)
-        if r["type"] != "none":
-            out.append(Signal(
-                type=r["type"], source="llm", strength=0.85,
-                confidence=r["confidence"], evidence=r["evidence"] or ev,
-            ))
-    return out
