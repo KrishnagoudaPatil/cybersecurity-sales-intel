@@ -90,8 +90,7 @@ def _mock_outreach(c: dict) -> str:
     lead = _lead_finding(c)
     name = c["company_domain"].split(".")[0]
     return (f"Subject: {name}: security exposure noticed\n"
-            f"Hi there,\n\nWhile researching {c['company_domain']} we noticed {lead} on your "
-            f"public-facing infrastructure. Teams often can't see these external exposures "
+            f"Hi there,\n\nWhile researching {c['company_domain']} we noticed {lead}. Teams often can't see these external exposures "
             f"from the inside. We help close them fast, mapped to your risk.\n\n"
             f"Worth a quick 15-minute external posture review next week?\n\n"
             f"Best,\nAlex — CyberShield")

@@ -1,0 +1,4 @@
+# Extra deps for DATA_BACKEND=snowflake and the mart export script.
+# Install into the 3.12 venv (snowflake-connector lacks 3.14 wheels):
+#   python3.12 -m venv .venv-snow && .venv-snow/bin/pip install -r backend/requirements.txt -r backend/requirements-snowflake.txt
+snowflake-connector-python[secure-local-storage]>=3.12

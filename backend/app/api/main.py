@@ -1,76 +1,75 @@
-"""FastAPI app — the product surface a salesperson (via the React UI) hits."""
+"""FastAPI app — serves the real scored prospects from the Snowflake marts.
+
+Data comes through the repository (local snapshot by default, or live Snowflake), so the
+API code is identical regardless of backend. LLM summary/outreach run on demand.
+"""
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import TRACES_DIR, get_settings
-from app.llm.judgement import account_summary, outreach_draft
-from app.service import get_book
+from app.config import REPO_ROOT, TRACES_DIR, get_settings
+from app.llm.judgement import account_risk_summary, outreach_draft
+from app.repo import get_repo
 
-app = FastAPI(title="Firmable Sales Intelligence API", version="0.1.0")
-app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
-)
+app = FastAPI(title="CyberShield Sales Intelligence API", version="0.2.0")
+app.add_middleware(CORSMiddleware, allow_origins=["*"],
+                   allow_methods=["*"], allow_headers=["*"])
 
 
 @app.get("/health")
 def health():
     s = get_settings()
-    return {"status": "ok", "llm_mode": "live" if s.llm_live else "mock",
+    return {"status": "ok", "data_backend": s.data_backend,
+            "llm_mode": "live" if s.llm_live else "mock",
             "model_classify": s.model_classify, "model_judge": s.model_judge}
 
 
 @app.get("/facets")
 def facets():
-    return get_book().facets()
+    return get_repo().facets()
 
 
 @app.get("/worklist")
-def worklist(industry: str | None = None, state: str | None = None,
-             tier: str | None = None, min_score: float = 0.0,
-             employee_band: str | None = None, limit: int = 50):
-    return get_book().worklist(industry=industry, state=state, tier=tier,
-                               min_score=min_score, employee_band=employee_band, limit=limit)
+def worklist(country: str | None = None, tier: str | None = None,
+             size_band: str | None = None, min_score: float = 0.0, limit: int = 100):
+    return get_repo().worklist(country=country, tier=tier, size_band=size_band,
+                               min_score=min_score, limit=limit)
 
 
-@app.get("/companies/{company_id}")
-def company_detail(company_id: str):
-    book = get_book()
-    if company_id not in book.companies:
+@app.get("/companies/{domain}")
+def company_detail(domain: str):
+    d = get_repo().company(domain)
+    if not d:
         raise HTTPException(404, "company not found")
-    return {"company": book.companies[company_id], "score": book.scores[company_id]}
+    return d
 
 
-@app.post("/companies/{company_id}/summary")
-def company_summary(company_id: str):
-    book = get_book()
-    if company_id not in book.companies:
+@app.post("/companies/{domain}/summary")
+def company_summary(domain: str):
+    d = get_repo().company(domain)
+    if not d:
         raise HTTPException(404, "company not found")
-    text = account_summary(book.companies[company_id], book.scores[company_id])
-    return {"company_id": company_id, "summary": text}
+    return {"company_domain": domain, "summary": account_risk_summary(d["company"])}
 
 
-@app.post("/companies/{company_id}/outreach")
-def company_outreach(company_id: str):
-    book = get_book()
-    if company_id not in book.companies:
+@app.post("/companies/{domain}/outreach")
+def company_outreach(domain: str):
+    d = get_repo().company(domain)
+    if not d:
         raise HTTPException(404, "company not found")
-    return outreach_draft(book.companies[company_id], book.scores[company_id])
+    return outreach_draft(d["company"])
 
 
 @app.get("/cost")
 def cost_summary():
-    """Aggregate spend + volume from the trace log — powers the cost dashboard."""
     tf = TRACES_DIR / "llm_calls.jsonl"
     if not tf.exists():
         return {"calls": 0, "total_cost_usd": 0.0, "by_feature": {}}
     by_feature: dict[str, dict] = {}
-    total_cost = 0.0
-    calls = 0
+    total_cost, calls = 0.0, 0
     for line in tf.read_text().splitlines():
         if not line.strip():
             continue
@@ -87,9 +86,6 @@ def cost_summary():
 
 
 # --- Optional: serve the built React SPA from the same origin (single-URL deploy) ---
-# If frontend/dist exists (i.e. `npm run build` was run), mount it at / so the whole
-# app is one URL. In dev we skip this and use the Vite proxy instead.
-from app.config import REPO_ROOT  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
 
 _dist = REPO_ROOT / "frontend" / "dist"

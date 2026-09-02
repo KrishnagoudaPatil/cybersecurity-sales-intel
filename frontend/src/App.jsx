@@ -1,16 +1,22 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { api } from "./api.js";
 
-const TIER_META = {
-  A: { label: "A", color: "var(--tier-a)" },
-  B: { label: "B", color: "var(--tier-b)" },
-  C: { label: "C", color: "var(--tier-c)" },
-  D: { label: "D", color: "var(--tier-d)" },
-};
+const TIER_COLOR = { A: "var(--tier-a)", B: "var(--tier-b)", C: "var(--tier-c)", D: "var(--tier-d)" };
+const TierBadge = ({ tier }) => (
+  <span className="tier" style={{ background: TIER_COLOR[tier] || TIER_COLOR.D }}>{tier}</span>
+);
 
-function TierBadge({ tier }) {
-  const m = TIER_META[tier] || TIER_META.D;
-  return <span className="tier" style={{ background: m.color }}>{m.label}</span>;
+// Build finding chips from a company's aggregate counts.
+function findingChips(c) {
+  const out = [];
+  if (c.total_cves > 0) out.push({ t: `${c.total_cves} CVE${c.total_cves > 1 ? "s" : ""}`, k: "crit" });
+  if (c.exposed_db_services > 0) out.push({ t: "exposed DB", k: "crit" });
+  if (c.exposed_remote_services > 0) out.push({ t: "remote access", k: "warn" });
+  if (c.eol_services > 0) out.push({ t: "EOL", k: "warn" });
+  if (c.weak_tls_services > 0) out.push({ t: "weak TLS", k: "warn" });
+  if (c.self_signed_services > 0) out.push({ t: "self-signed", k: "" });
+  if ((c.missing_header_ratio || 0) >= 0.5) out.push({ t: "missing hdrs", k: "" });
+  return out;
 }
 
 function ScoreBar({ value, kind }) {
@@ -27,22 +33,16 @@ function Filters({ facets, filters, setFilters }) {
   return (
     <aside className="filters">
       <h2>Target</h2>
-      <label>Industry
-        <select value={filters.industry} onChange={set("industry")}>
-          <option value="">All industries</option>
-          {facets.industries?.map((i) => <option key={i} value={i}>{i}</option>)}
+      <label>Country
+        <select value={filters.country} onChange={set("country")}>
+          <option value="">All countries</option>
+          {facets.countries?.map((x) => <option key={x} value={x}>{x}</option>)}
         </select>
       </label>
-      <label>State
-        <select value={filters.state} onChange={set("state")}>
-          <option value="">All states</option>
-          {facets.states?.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-      </label>
-      <label>Employees
-        <select value={filters.employee_band} onChange={set("employee_band")}>
+      <label>Company size
+        <select value={filters.size_band} onChange={set("size_band")}>
           <option value="">Any size</option>
-          {facets.employee_bands?.map((b) => <option key={b} value={b}>{b}</option>)}
+          {facets.size_bands?.map((x) => <option key={x} value={x}>{x}</option>)}
         </select>
       </label>
       <label>Tier
@@ -52,8 +52,7 @@ function Filters({ facets, filters, setFilters }) {
         </select>
       </label>
       <label>Min score: <b>{filters.min_score}</b>
-        <input type="range" min="0" max="100" value={filters.min_score}
-          onChange={set("min_score")} />
+        <input type="range" min="0" max="100" value={filters.min_score} onChange={set("min_score")} />
       </label>
       <div className="tier-legend">
         {Object.entries(facets.tiers || {}).map(([t, n]) => (
@@ -68,31 +67,37 @@ function Worklist({ rows, onSelect, selectedId }) {
   return (
     <div className="worklist">
       <div className="wl-head">
-        <span className="c-rank">#</span>
-        <span className="c-name">Account</span>
-        <span className="c-score">Score</span>
-        <span className="c-sig">Signals</span>
+        <span className="c-rank">#</span><span className="c-name">Company</span>
+        <span className="c-score">Score</span><span className="c-sig">Exposure</span>
       </div>
       {rows.map((r, i) => (
-        <button key={r.company_id}
-          className={`wl-row ${selectedId === r.company_id ? "sel" : ""}`}
-          onClick={() => onSelect(r.company_id)}>
+        <button key={r.company_domain}
+          className={`wl-row ${selectedId === r.company_domain ? "sel" : ""}`}
+          onClick={() => onSelect(r.company_domain)}>
           <span className="c-rank">{i + 1}</span>
-          <span className="c-name">
-            <TierBadge tier={r.tier} /> {r.company_name}
-          </span>
+          <span className="c-name"><TierBadge tier={r.tier} /> {r.company_domain}</span>
           <span className="c-score"><b>{Math.round(r.total_score)}</b></span>
           <span className="c-sig">
-            {r.signals.slice(0, 3).map((s, k) => (
-              <span key={k} className={`chip ${s.source}`}>{s.type.replace(/_/g, " ")}</span>
+            {findingChips(r).slice(0, 4).map((c, k) => (
+              <span key={k} className={`chip ${c.k}`}>{c.t}</span>
             ))}
-            {r.signals.length > 3 && <span className="chip more">+{r.signals.length - 3}</span>}
           </span>
         </button>
       ))}
-      {rows.length === 0 && <div className="empty">No accounts match these filters.</div>}
+      {rows.length === 0 && <div className="empty">No companies match these filters.</div>}
     </div>
   );
+}
+
+function svcChips(s) {
+  const out = [];
+  if (s.cve_count > 0) out.push({ t: `${s.cve_count} CVE`, k: "crit" });
+  if (s.exposed_database) out.push({ t: "DB", k: "crit" });
+  if (s.exposed_remote_access) out.push({ t: "remote", k: "warn" });
+  if (s.is_eol) out.push({ t: "EOL", k: "warn" });
+  if (s.weak_tls) out.push({ t: "weak TLS", k: "warn" });
+  if (s.self_signed) out.push({ t: "self-signed", k: "" });
+  return out;
 }
 
 function Drawer({ id, onClose }) {
@@ -105,9 +110,8 @@ function Drawer({ id, onClose }) {
     setData(null); setSummary(null); setOutreach(null);
     if (id) api.company(id).then(setData);
   }, [id]);
-
   if (!id) return null;
-  const c = data?.company, s = data?.score;
+  const c = data?.company, services = data?.services || [];
 
   const gen = async (kind) => {
     setBusy(kind);
@@ -117,61 +121,58 @@ function Drawer({ id, onClose }) {
     } finally { setBusy(""); }
   };
 
+  const FINDINGS = [
+    ["total_cves", "Known CVEs"], ["exposed_db_services", "Exposed databases"],
+    ["exposed_remote_services", "Exposed remote access"], ["eol_services", "End-of-life software"],
+    ["self_signed_services", "Self-signed certs"], ["weak_tls_services", "Weak TLS"],
+    ["expired_cert_services", "Expired certs"],
+  ];
+
   return (
     <div className="drawer">
       <button className="drawer-close" onClick={onClose}>×</button>
       {!data ? <div className="loading">Loading…</div> : (
         <>
-          <div className="drawer-head">
-            <TierBadge tier={s.tier} />
-            <h2>{c.company_name}</h2>
-          </div>
+          <div className="drawer-head"><TierBadge tier={c.tier} /><h2>{c.company_domain}</h2></div>
           <div className="firmo">
-            <span>{c.industry}</span><span>{c.employee_count} staff</span>
-            <span>{c.city}, {c.state}</span><span>${(c.annual_revenue_aud/1e6).toFixed(1)}M</span>
-            <span>ABN {c.abn}</span><span>Est. {c.founded_year}</span>
+            <span>{c.primary_country}</span><span>{c.size_band}</span>
+            <span>{c.host_count} hosts</span><span>{c.service_count} services</span>
+            <span>{c.distinct_ports} ports</span><span>host: {c.primary_hosting_org}</span>
           </div>
 
           <div className="score-grid">
-            <div><label>ICP fit</label><ScoreBar value={s.icp_fit} kind="fit" /></div>
-            <div><label>Intent</label><ScoreBar value={s.intent_score} kind="intent" /></div>
-            <div><label>Total</label><ScoreBar value={s.total_score} kind="total" /></div>
+            <div><label>Risk</label><ScoreBar value={c.risk_score} kind="intent" /></div>
+            <div><label>Fit</label><ScoreBar value={c.fit_score} kind="fit" /></div>
+            <div><label>Total</label><ScoreBar value={c.total_score} kind="total" /></div>
           </div>
 
-          <h3>Buying signals</h3>
-          <div className="signals">
-            {s.signals.length === 0 && <div className="muted">No strong signals.</div>}
-            {s.signals.map((sig, k) => (
-              <div key={k} className="signal">
-                <span className={`chip ${sig.source}`}>{sig.source}</span>
-                <div>
-                  <b>{sig.type.replace(/_/g, " ")}</b>
-                  <p>{sig.evidence}</p>
-                </div>
+          <h3>Exposure summary</h3>
+          <div className="findings">
+            {FINDINGS.filter(([k]) => (c[k] || 0) > 0).map(([k, label]) => (
+              <div key={k} className="finding"><b>{c[k]}</b> {label}</div>
+            ))}
+            {(c.missing_header_ratio || 0) > 0 &&
+              <div className="finding"><b>{Math.round(c.missing_header_ratio * 100)}%</b> HTTP security headers missing</div>}
+            {findingChips(c).length === 0 && <div className="muted">No significant exposure.</div>}
+          </div>
+
+          <h3>Exposed services ({services.length})</h3>
+          <div className="svc-list">
+            {services.map((s, k) => (
+              <div key={k} className="svc">
+                <span className="svc-ipp">{s.ip}:{s.port}</span>
+                <span className="svc-prod">{s.product || "—"}</span>
+                <span className="svc-chips">{svcChips(s).map((x, i) =>
+                  <span key={i} className={`chip ${x.k}`}>{x.t}</span>)}</span>
               </div>
             ))}
           </div>
 
-          <h3>Score breakdown</h3>
-          <table className="breakdown">
-            <tbody>
-              {s.breakdown.map((b, k) => (
-                <tr key={k}><td>{b.component.replace(/_/g, " ")}</td>
-                  <td className="pts">+{b.points}</td><td className="detail">{b.detail}</td></tr>
-              ))}
-            </tbody>
-          </table>
-
-          <h3>Recent events (raw)</h3>
-          <ul className="events">{c.recent_events.map((e, k) => <li key={k}>{e}</li>)}</ul>
-
           <div className="actions">
             <button disabled={busy} onClick={() => gen("summary")}>
-              {busy === "summary" ? "Generating…" : "Why now →"}
-            </button>
+              {busy === "summary" ? "Generating…" : "Why now →"}</button>
             <button disabled={busy} onClick={() => gen("outreach")}>
-              {busy === "outreach" ? "Drafting…" : "Draft outreach ✉"}
-            </button>
+              {busy === "outreach" ? "Drafting…" : "Draft outreach ✉"}</button>
           </div>
           {summary && <div className="ai-out"><label>Why now</label><p>{summary}</p></div>}
           {outreach && (
@@ -193,14 +194,10 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const [health, setHealth] = useState(null);
   const [cost, setCost] = useState(null);
-  const [filters, setFilters] = useState({
-    industry: "", state: "", tier: "", employee_band: "", min_score: 0,
-  });
+  const [filters, setFilters] = useState({ country: "", size_band: "", tier: "", min_score: 0 });
 
   useEffect(() => {
-    api.facets().then(setFacets);
-    api.health().then(setHealth);
-    api.cost().then(setCost);
+    api.facets().then(setFacets); api.health().then(setHealth); api.cost().then(setCost);
   }, []);
 
   const load = useCallback(() => {
@@ -215,9 +212,10 @@ export default function App() {
       <header className="topbar">
         <div className="brand">🛡️ CyberShield <span>Sales Intelligence</span></div>
         <div className="meta">
+          {health && <span className="pill">data: {health.data_backend}</span>}
           {health && <span className={`pill ${health.llm_mode}`}>LLM: {health.llm_mode}</span>}
           {cost && <span className="pill cost">${cost.total_cost_usd?.toFixed(3)} · {cost.calls} calls</span>}
-          <span className="pill">{facets.total} accounts</span>
+          {facets.total != null && <span className="pill">{facets.total} companies</span>}
         </div>
       </header>
       <div className="body">
@@ -225,7 +223,7 @@ export default function App() {
         <main>
           <div className="main-head">
             <h1>Prospect worklist</h1>
-            <p>{rows.length} accounts, ranked by likelihood to buy cybersecurity software.</p>
+            <p>{rows.length} companies, ranked by observed security risk × market fit.</p>
           </div>
           <Worklist rows={rows} onSelect={setSelected} selectedId={selected} />
         </main>

@@ -8,6 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = REPO_ROOT / "data"
+MARTS_DIR = DATA_DIR / "marts"      # published mart snapshot for the local backend
 TRACES_DIR = REPO_ROOT / "traces"
 PROMPTS_DIR = REPO_ROOT / "prompts"
 
@@ -17,12 +18,15 @@ class Settings(BaseSettings):
 
     # Anthropic
     anthropic_api_key: str = ""
-    # Model routing: cheap model for high-volume classification, strong model for judgement.
-    model_classify: str = "claude-haiku-4-5-20251001"
-    model_judge: str = "claude-sonnet-5"
+    model_classify: str = "claude-haiku-4-5-20251001"  # cheap, high-volume classification
+    model_judge: str = "claude-sonnet-5"               # strong, low-volume judgement
 
-    # If no API key is present the LLM layer runs in deterministic MOCK mode so the
-    # whole pipeline (evals, traces, cost) still works end-to-end offline.
+    # Where the app reads prospect data from:
+    #   local     -> data/marts/*.json snapshot (default; deploys anywhere, no creds/cost)
+    #   snowflake -> live queries against the marts (needs creds + a running warehouse,
+    #                and the 3.12 venv with snowflake-connector)
+    data_backend: str = "local"
+
     @property
     def llm_live(self) -> bool:
         return bool(self.anthropic_api_key)
