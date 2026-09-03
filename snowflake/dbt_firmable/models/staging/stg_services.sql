@@ -33,11 +33,16 @@ select
     v:http:status::int                                 as http_status,
     v:http:headers                                     as http_headers,
     v:http:title::string                               as http_title,
+    v:http:host::string                                as http_host,
 
     -- tls
     (v:ssl is not null)                                as has_tls,
     v:ssl:versions                                     as tls_versions,
     v:ssl:cert:expired::boolean                        as cert_expired,
+    -- cert identity: the tenant provisions its own cert, so the subject names the
+    -- real company regardless of who owns the IP (best entity-resolution signal).
+    v:ssl:cert:subject:CN::string                      as cert_cn,
+    v:ssl:cert:subject:O::string                       as cert_o,
 
     -- vulnerabilities: Shodan exposes both a top-level `vulns` object and opts.vulns[]
     v:vulns                                            as vulns_obj,

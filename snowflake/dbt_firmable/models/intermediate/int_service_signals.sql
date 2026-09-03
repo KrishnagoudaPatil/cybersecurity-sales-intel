@@ -19,6 +19,7 @@ select
     ip, port, transport, org, isp, asn,
     country_code, country_name, city,
     domains, hostnames, tags, product, version, banner, observed_at,
+    cert_cn, cert_o, http_host,
 
     array_size(cve_ids)                                         as cve_count,
     (array_size(cve_ids) > 0)                                   as has_known_cve,

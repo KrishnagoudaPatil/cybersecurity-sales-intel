@@ -27,6 +27,11 @@ traces/*.jsonl
 evals/runs/*
 !evals/runs/.gitkeep
 
+# dbt build artifacts (regenerable)
+snowflake/dbt_firmable/target/
+snowflake/dbt_firmable/logs/
+snowflake/dbt_firmable/dbt_packages/
+
 # OS
 .DS_Store
 

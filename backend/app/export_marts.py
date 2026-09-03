@@ -33,6 +33,7 @@ select f.company_domain, f.tier, f.total_score, f.risk_score, f.fit_score,
        f.total_cves, f.services_with_cve, f.exposed_db_services, f.exposed_remote_services,
        f.eol_services, f.self_signed_services, f.weak_tls_services, f.expired_cert_services,
        f.missing_header_ratio,
+       d.company_name, d.attribution_confidence,
        d.size_band, d.primary_hosting_org, d.distinct_ports, d.last_seen
 from FIRMABLE.DBT_MARTS.FCT_ACCOUNT_SCORE f
 join FIRMABLE.DBT_MARTS.DIM_COMPANY d using (company_domain)

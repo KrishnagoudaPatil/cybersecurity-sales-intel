@@ -6,19 +6,25 @@ means. Columns are marked **[raw]** (extracted straight from the source JSON) or
 
 ## Pipeline layers
 
-| Layer | Object | Type | Grain | Rows (1k sample) |
-|-------|--------|------|-------|------------------|
-| Landing | `RAW.SCANS` | table | 1 row per scanned service (raw JSON) | 1,000 |
-| Seed | `DBT_SEEDS.INFRA_DOMAINS` | table | 1 row per hosting/CDN domain | 32 |
-| Staging | `DBT_STAGING.STG_SERVICES` | view | 1 row per service (typed) | 998 |
-| Intermediate | `DBT_INTERMEDIATE.INT_SERVICE_SIGNALS` | view | 1 row per service + findings | 998 |
-| Intermediate | `DBT_INTERMEDIATE.INT_SERVICE_COMPANY` | view | 1 row per attributable service | 462 |
-| Mart | `DBT_MARTS.DIM_COMPANY` | table | 1 row per company | 157 |
-| Mart | `DBT_MARTS.FCT_ACCOUNT_SCORE` | table | 1 row per scored company | 157 |
+| Layer | Object | Type | Grain | Rows (100k sample) |
+|-------|--------|------|-------|--------------------|
+| Landing | `RAW.SCANS` | table | 1 row per scanned service (raw JSON) | 100,000 |
+| Seed | `DBT_SEEDS.INFRA_DOMAINS` | table | 1 row per hosting/CDN/ISP domain | see CSV |
+| Seed | `DBT_SEEDS.INFRA_ORG_PATTERNS` | table | 1 row per hosting/telco org substring | see CSV |
+| Staging | `DBT_STAGING.STG_SERVICES` | view | 1 row per service (typed) | ~100k |
+| Intermediate | `DBT_INTERMEDIATE.INT_SERVICE_SIGNALS` | view | 1 row per service + findings | ~100k |
+| Intermediate | `DBT_INTERMEDIATE.INT_SERVICE_COMPANY` | view | 1 row per attributable service | ~10k |
+| Mart | `DBT_MARTS.DIM_COMPANY` | table | 1 row per company | ~5.9k |
+| Mart | `DBT_MARTS.FCT_ACCOUNT_SCORE` | table | 1 row per scored company | ~5.9k |
 
 Data source: Shodan internet-wide scan export — **NDJSON**, one JSON object per line,
 ~13 GB zstd-compressed / ~74 GB uncompressed (~10M records). Each record is one
-service observed on one IP:port.
+service observed on one IP:port. Counts above are from the 100k-record dev sample; the
+1k sample yields proportionally fewer.
+
+Supporting objects (not layers): the `registrable_domain` macro (eTLD+1 normalisation,
+a lightweight Public-Suffix-List stand-in) and the `assert_company_footprint_plausible`
+singular test (a warn-severity fan-out guardrail — see INT_SERVICE_COMPANY below).
 
 ---
 
@@ -58,9 +64,12 @@ null-safe via `COALESCE`).
 | `http_status` | `http.status` | [raw] | int | HTTP response code; NULL means not an HTTP service. |
 | `http_headers` | `http.headers` | [raw] | object | HTTP response headers (drives header hygiene checks). |
 | `http_title` | `http.title` | [raw] | string | Page title. |
+| `http_host` | `http.host` | [raw] | string | Host the service advertised (often the bare IP); an entity-resolution signal when it is a real hostname. |
 | `has_tls` | `ssl is not null` | [derived] | bool | Whether TLS/SSL (a cert) was observed. |
 | `tls_versions` | `ssl.versions` | [raw] | array | TLS/SSL versions offered (legacy = weak). |
 | `cert_expired` | `ssl.cert.expired` | [raw] | bool | Whether the TLS cert is expired. |
+| `cert_cn` | `ssl.cert.subject.CN` | [raw] | string | Cert subject common name — the tenant's domain, independent of who owns the IP (primary entity-resolution signal). |
+| `cert_o` | `ssl.cert.subject.O` | [raw] | string | Cert subject organisation — the real company name, when present. |
 | `vulns_obj` | `vulns` | [raw] | object | Known CVEs (object keys are CVE ids). |
 | `opts_vulns` | `opts.vulns` | [raw] | array | Secondary CVE list (Shodan stores CVEs in two places). |
 | `banner` | `data` | [raw] | string | Raw captured response/banner (free text). |
@@ -94,14 +103,36 @@ Adds findings; grain unchanged (1 row per service). The deterministic "rules" la
 ---
 
 ## INT_SERVICE_COMPANY — entity resolution [derived]
-Explodes `domains`, drops infra domains (seed anti-join), picks one primary domain per
-service. Carries all signal columns through, adds `company_domain`. Services with no
-attributable domain drop out.
+Attributes each service to the company that operates it via a **confidence-ranked
+waterfall** of signals (best → weakest), because the IP owner (`org`) is the hosting
+provider, not the tenant:
+
+1. **TLS cert CN** (`cert_cn` → registrable domain), confidence **0.9** — trusted even on
+   cloud/hosting IPs, since the tenant provisions its own cert.
+2. **HTTP Host** (`http_host`, when a real hostname not the bare IP), confidence **0.6**.
+3. **Reverse-DNS domains** (`domains`), confidence **0.5** — used only when the host's
+   `org` does **not** match `infra_org_patterns` (a provider PTR names the provider).
+
+Every candidate is normalised to its registrable domain via the `registrable_domain`
+macro, then screened: null/degenerate, IP-like, reserved TLDs (`.local`, `.lan`,
+`.gateway`, `.invalid`…), placeholder domains (`example.com`, `localhost`), bare public
+suffixes, and any domain in the `infra_domains` seed are dropped. The highest-confidence
+candidate wins (ties broken by shortest domain). Services with no attributable company
+drop out (unattributed).
 
 | Column | Derived from | Meaning |
 |--------|--------------|---------|
-| `company_domain` | shortest surviving non-infra domain | The company key. |
+| `company_domain` | winning candidate | The company key (registrable domain). |
+| `attribution_source` | winning candidate | `cert` / `http` / `rdns` — which signal resolved it. |
+| `attribution_confidence` | winning candidate | 0.9 / 0.6 / 0.5 by source — auditability + thresholding. |
+| `company_name` | `cert_o` | Real company name from the cert, when present (else NULL). |
 | *(all INT_SERVICE_SIGNALS finding columns)* | carried through | Per-service findings, now tagged with a company. |
+
+**Fans-out guardrail** (`tests/assert_company_footprint_plausible.sql`): a warn-severity
+dbt test that flags any `company_domain` with `host_count > 150` — the signature of
+infrastructure that leaked past the filters and glued unrelated hosts into a phantom
+company. It turns "fails open" into "fails loud": new infra surfaces as a test warning to
+triage instead of silently polluting the marts.
 
 ---
 
@@ -110,6 +141,8 @@ attributable domain drop out.
 | Column | Meaning |
 |--------|---------|
 | `company_domain` | Primary registrable domain — the company key. |
+| `company_name` | Real company name (mode of `company_name` from cert subject O), when any host had a cert. |
+| `attribution_confidence` | Best attribution confidence across the company's services (0.9 cert / 0.6 http / 0.5 rDNS). |
 | `host_count` | Distinct IPs attributed to the company. |
 | `service_count` | Distinct services (IP:port). |
 | `distinct_ports` | Distinct ports exposed. |

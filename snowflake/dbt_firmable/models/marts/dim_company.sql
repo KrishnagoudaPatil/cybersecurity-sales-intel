@@ -3,6 +3,8 @@
 with s as (select * from {{ ref('int_service_company') }})
 select
     company_domain,
+    mode(company_name)                      as company_name,        -- from TLS cert subject O, when present
+    max(attribution_confidence)             as attribution_confidence,
     count(distinct ip)                      as host_count,
     count(*)                                as service_count,
     count(distinct port)                    as distinct_ports,

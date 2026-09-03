@@ -5,49 +5,57 @@ several items were surfaced while validating the pipeline on the real data.
 
 ## Entity resolution (highest leverage)
 The biggest source of error: mapping scanned hosts to the real company that owns them.
+`int_service_company` was rebuilt as a **confidence-ranked attribution waterfall** and
+validated on the 100k sample — items 1–3 and 6 below are now **addressed**; the remaining
+work is raising precision on the long tail.
 
-1. **Resolve company from the TLS certificate.**
-   - *Problem:* 358/998 sample services have no domain at all (no reverse-DNS / PTR
-     record), so they drop out of the company marts — even though these bare hosts
-     (databases, IoT, admin panels) are often the most security-exposed prospects.
-   - *Idea:* When `domains` is empty, read the domain off the TLS certificate — the `ssl`
-     object's certificate subject CN / SAN frequently names the real domain even when
-     reverse DNS does not (e.g. `CN=admin.acme.com`). Use it as a fallback company key.
-   - *Impact:* High — recovers high-risk hosts we currently discard. *Effort:* Medium.
+1. ✅ **Done — Resolve company from the TLS certificate.** The waterfall now uses
+   `ssl.cert.subject.CN` (→ registrable domain) as the primary, highest-confidence (0.9)
+   signal, trusted even on cloud/hosting IPs, and pulls the company *name* from
+   `subject.O`. This recovers real tenants the old reverse-DNS logic could never find
+   (e.g. `microsoft.com`, `duolingo.com`, `cam.ac.uk`, `kaseya.com` on cloud IPs).
 
-2. **Auto-detect infrastructure via ASN/org instead of a hand-kept domain list.**
-   - *Problem:* `infra_domains` is a manual seed; a missing entry silently creates a fake
-     company (e.g. `incapdns.net` = 244 hosts, `myftpupload.com`, `vultrusercontent.com`
-     slipped through). It "fails open".
-   - *Idea:* The data already identifies the host in `org`/`isp`/`asn` (few, stable
-     providers). Maintain a hosting ASN/org list and flag infra from that, plus a
-     public-suffix list to extract true registrable domains. Keep the domain as the
-     company key, but derive the infra filter from the data.
-   - *Impact:* High. *Effort:* Medium.
+2. ✅ **Done (patterns) — Auto-detect infrastructure via org instead of only a domain
+   list.** The reverse-DNS signal is now distrusted when the host's `org` matches the
+   `infra_org_patterns` seed (hosting/CDN/telco substrings). *Remaining upgrade:* key off
+   a curated **hosting-ASN list** rather than fuzzy org strings, for higher precision.
 
-3. **Guardrail test for implausible companies.**
-   - Add a dbt test that fails when a `company_domain` has an improbable footprint for one
-     company (host_count above a threshold, spans many ASNs, or `primary_hosting_org`
-     matches a provider pattern). New infra domains surface as a failing test instead of
-     quietly polluting the marts. *Impact:* Medium. *Effort:* Low.
+3. ✅ **Done — Guardrail test for implausible companies.**
+   `tests/assert_company_footprint_plausible.sql` warns when a `company_domain` has
+   `host_count > 150`. Turned "fails open" into "fails loud"; it currently flags the
+   residual leakers (e.g. `btcentralplus.com`, `play.pl`) for triage.
 
 4. **Passive / forward DNS enrichment.** Shodan gives reverse DNS; a passive-DNS source
-   gives which domains point *to* an IP. Use it to attribute no-domain hosts.
+   gives which domains point *to* an IP. Use it to attribute no-domain, no-cert hosts.
    *Impact:* Medium. *Effort:* Medium/High.
 
 5. **"Unattributed exposures" bucket.** Don't discard services with findings but no
    company — keep them in a separate model for an ops view and later matching.
    *Impact:* Medium. *Effort:* Low.
 
-6. **Expand the `infra_domains` seed** with known gaps (`vultrusercontent.com`,
-   `myftpupload.com`, `secureserver.net`, `linodeusercontent.com`, `ngrok.io`,
-   `incapdns.net`, `flyio.net`, …). Quick stop-gap until #2 lands. *Effort:* Trivial.
+6. ✅ **Done (stop-gap) — Expanded the `infra_domains` seed** with the leakers surfaced at
+   100k (`incapdns.net`, `flyio.net`, `vultrusercontent.com`, `secureserver.net`,
+   `linodeusercontent.com`, `bluehost.com`, `colocrossing.com`, consumer-ISP domains, …).
+   Whack-a-mole by nature — superseded properly by #2's ASN approach and #6b below.
+
+6b. **Full Public Suffix List as a seed.** `registrable_domain` uses a hand-curated
+    two-level-suffix set (a PSL stand-in); loading the real PSL removes the bare-eTLD
+    leakers (`ne.jp`, `net.id`, …) for good. *Effort:* Low/Medium.
+
+6c. **Appliance / default-cert blocklist.** Some hosts present default certs whose subject
+    is a vendor/placeholder (`localhost.localdomain`, `Fortinet`, `Acme Co`,
+    `HTTPS Management Certificate`); reserved TLDs and placeholders are already filtered,
+    but a small default-cert blocklist would catch the rest. *Effort:* Trivial.
 
 ## Signal quality
 7. **CVE severity (CVSS) weighting.** Today all CVEs count equally; enrich with CVSS so a
    critical RCE outranks a low-severity issue. *Effort:* Medium.
 8. **Robust header parsing.** Current missing-header checks use a lowercased key string +
    LIKE; move to structured key iteration for edge cases.
+8b. **Tiny-footprint accounts score too high.** A 1-host company with a couple of CVEs can
+    reach tier A because `risk_score` caps near 100 regardless of footprint size. Consider
+    scaling risk by footprint/confidence, or a minimum-evidence floor, so single-host
+    shells don't crowd out substantial prospects. *Effort:* Low.
 
 ## Scale & operations
 9. **Load the full 74 GB**, not the sample: land in an external stage (S3) + Snowpipe,
