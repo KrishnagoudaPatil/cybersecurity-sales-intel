@@ -124,8 +124,9 @@ The API reads prospects through a repository interface with two implementations,
 - `local` (default) — `LocalRepo` reads the committed `data/marts/*.json` snapshot published
   by `export_marts.py`. Deploys anywhere, needs no Snowflake credentials or running
   warehouse, and costs nothing to demo.
-- `snowflake` — `SnowflakeRepo` queries the marts live (needs credentials and the 3.12
-  `.venv-snow`). Chosen because the full marts could grow large enough that snapshotting the
+- `snowflake` — `SnowflakeRepo` queries the marts live (needs credentials + a running
+  warehouse; `snowflake-connector-python` runs on Python 3.14, so the app's own venv
+  suffices). Chosen because the full marts could grow large enough that snapshotting the
   whole thing locally is impractical — at that point you query in place instead of exporting.
 
 Same interface for both, so `api/main.py` is identical regardless of backend.

@@ -1,9 +1,10 @@
 # Snowflake pipeline — load → dbt → export
 
 This rebuilds the prospect marts from raw Shodan scan data. It needs Snowflake credentials
-and the **Python 3.12** environment (`.venv-snow`) — the app's 3.14 venv can't install the
-Snowflake connector or dbt. The committed `data/marts/*.json` snapshot means you only need
-this if you're re-loading data or changing the transforms.
+and a Python env with `snowflake-connector-python` + `dbt-snowflake` — **both install and
+run on Python 3.14** (verified), so the app's own `backend/.venv` works; the repo also has
+a 3.12 `.venv-snow` from earlier and either is fine. The committed `data/marts/*.json`
+snapshot means you only need this if you're re-loading data or changing the transforms.
 
 ## Layout
 ```
@@ -18,7 +19,9 @@ snowflake/
 ```
 
 ## Prerequisites
-- A `.venv-snow` on Python 3.12 with `snowflake-connector-python` and `dbt-snowflake`.
+- A Python env with `snowflake-connector-python` and `dbt-snowflake` — **3.14 or 3.12 both
+  work** (e.g. the app's `backend/.venv`, or the repo's `.venv-snow`; commands below use
+  `.venv-snow`, swap the path for whichever you use).
 - `.env` at the repo root with the `SNOWFLAKE_*` values and a key-pair (`.p8`) whose public
   key is registered on the Snowflake user. See `backend/.env.example` for the variable list.
 - Key-pair auth (not password + MFA) so the loader and dbt run headless. `load_raw.py` reads

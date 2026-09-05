@@ -12,6 +12,7 @@ Runs in one of two modes:
 from __future__ import annotations
 
 import json
+import time
 from typing import Callable, Optional
 
 from app.config import get_settings
@@ -44,6 +45,60 @@ def _anthropic_call(model: str, prompt: str, max_tokens: int, temperature: float
     return text, resp.usage.input_tokens, resp.usage.output_tokens
 
 
+# Gemini flash models are "thinking" models: they spend output tokens on internal
+# reasoning BEFORE the visible answer. With a tight max_output_tokens the thinking eats
+# the whole budget and the answer is truncated to garbage, so give generous headroom.
+_GEMINI_THINKING_HEADROOM = 2048
+
+
+def _gemini_call(model: str, prompt: str, max_tokens: int, temperature: float):
+    from google import genai  # lazy: only needed when the gemini provider is active
+    from google.genai import types
+    client = genai.Client(api_key=get_settings().gemini_api_key)
+    resp = client.models.generate_content(
+        model=model,
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            max_output_tokens=max_tokens + _GEMINI_THINKING_HEADROOM,
+            temperature=temperature),
+    )
+    text = (resp.text or "").strip()
+    um = getattr(resp, "usage_metadata", None)
+    in_tok = getattr(um, "prompt_token_count", None) or estimate_tokens(prompt)
+    # thinking tokens are billed as output too — count them so /cost is honest
+    answer_tok = getattr(um, "candidates_token_count", None) or estimate_tokens(text)
+    thoughts_tok = getattr(um, "thoughts_token_count", None) or 0
+    return text, in_tok, answer_tok + thoughts_tok
+
+
+_PROVIDERS = {"anthropic": _anthropic_call, "gemini": _gemini_call}
+
+# Providers (esp. Gemini's free tier) throw intermittent 503/429 under load. These are
+# safe to retry — the request never landed — so a short backoff hides the hiccup instead
+# of failing the user's click.
+_TRANSIENT = ("503", "429", "500", "unavailable", "overloaded",
+              "rate limit", "resource_exhausted", "try again")
+
+
+def _is_transient(err: Exception) -> bool:
+    msg = str(err).lower()
+    return any(sig in msg for sig in _TRANSIENT)
+
+
+def _call_with_retry(provider, model, prompt, max_tokens, temperature, attempts=3):
+    last = None
+    for i in range(attempts):
+        try:
+            return _PROVIDERS[provider](model, prompt, max_tokens, temperature)
+        except Exception as e:  # noqa: BLE001
+            last = e
+            if i < attempts - 1 and _is_transient(e):
+                time.sleep(0.8 * (2 ** i))   # 0.8s, then 1.6s
+                continue
+            raise
+    raise last  # unreachable, but keeps type checkers happy
+
+
 def call(
     *,
     feature: str,
@@ -57,14 +112,15 @@ def call(
 ) -> LLMResult:
     """Make a traced LLM call. `mock_fn(prompt)->str` supplies the offline response."""
     settings = get_settings()
+    provider = settings.provider
     trace_id = new_trace_id()
     error = None
     text = ""
 
     with Timer() as t:
         try:
-            if settings.llm_live:
-                text, in_tok, out_tok = _anthropic_call(model, prompt, max_tokens, temperature)
+            if provider in _PROVIDERS:
+                text, in_tok, out_tok = _call_with_retry(provider, model, prompt, max_tokens, temperature)
                 mode = "live"
             else:
                 text = mock_fn(prompt) if mock_fn else ""
@@ -81,6 +137,7 @@ def call(
         "trace_id": trace_id,
         "feature": feature,
         "prompt_version": prompt_version,
+        "provider": provider,
         "model": model,
         "mode": mode,
         "input": prompt,

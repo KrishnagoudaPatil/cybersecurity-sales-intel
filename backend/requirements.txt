@@ -3,4 +3,6 @@ uvicorn[standard]>=0.34
 pydantic>=2.11
 pydantic-settings>=2.7
 anthropic>=0.42
+google-genai>=1.0
 python-dotenv>=1.0
+snowflake-connector-python>=4.7   # optional: only for DATA_BACKEND=snowflake (works on 3.14)

@@ -24,7 +24,8 @@ def health():
     s = get_settings()
     return {"status": "ok", "data_backend": s.data_backend,
             "llm_mode": "live" if s.llm_live else "mock",
-            "model_classify": s.model_classify, "model_judge": s.model_judge}
+            "llm_provider": s.provider,
+            "model_classify": s.model_for("classify"), "model_judge": s.model_for("judge")}
 
 
 @app.get("/facets")

@@ -32,6 +32,9 @@ snowflake/dbt_firmable/target/
 snowflake/dbt_firmable/logs/
 snowflake/dbt_firmable/dbt_packages/
 
+# IDE
+.idea/
+
 # OS
 .DS_Store
 

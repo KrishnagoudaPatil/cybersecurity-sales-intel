@@ -76,7 +76,7 @@ def classify_banner(banner: str, prompt_version: str | None = None) -> dict:
     prompt, version = render(FEATURE, version=prompt_version, banner=banner)
     result = call(
         feature=FEATURE, prompt=prompt, prompt_version=version,
-        model=get_settings().model_classify, max_tokens=40, temperature=0.0,
+        model=get_settings().model_for("classify"), max_tokens=40, temperature=0.0,
         mock_fn=_mock_classify,
     )
     return _parse(result.text)

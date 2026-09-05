@@ -42,7 +42,7 @@ def account_risk_summary(company: dict) -> str:
         findings=_findings_block(company),
     )
     res = call(feature="account_risk_summary", prompt=prompt, prompt_version=version,
-               model=get_settings().model_judge, max_tokens=200, temperature=0.3,
+               model=get_settings().model_for("judge"), max_tokens=200, temperature=0.3,
                mock_fn=lambda p: _mock_summary(company))
     return res.text.strip()
 
@@ -53,7 +53,7 @@ def outreach_draft(company: dict) -> dict:
         company_domain=company["company_domain"],
         findings=_findings_block(company),
     )
-    model = get_settings().model_judge
+    model = get_settings().model_for("judge")
     res = call(feature="outreach_draft", prompt=prompt, prompt_version=version,
                model=model, max_tokens=320, temperature=0.5,
                mock_fn=lambda p: _mock_outreach(company))

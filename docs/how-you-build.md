@@ -43,9 +43,13 @@ decisions, the agent owned the typing. My loop was:
   treats as false. It cost ~265 rows and ~60 companies before I spotted the count was wrong
   and directed the `COALESCE(...,false)` fix. AI writes plausible SQL that is subtly wrong on
   NULL semantics.
-- **A bleeding-edge runtime.** The machine had Python 3.14 with no prebuilt wheels for
-  Snowflake/dbt, so I run those in a separate **3.12 `.venv-snow`** while the app stays on
-  3.14. The agent burned a cycle before I split the environments.
+- **A stale-knowledge detour on the runtime.** The machine runs Python 3.14, and I assumed
+  `snowflake-connector-python` and `dbt` had no 3.14 wheels, so I split the Snowflake work
+  into a separate 3.12 `.venv-snow`. That assumption was wrong — both install and run fine
+  on 3.14 (verified with a live connector query and `dbt --version`). The lesson: check
+  compatibility empirically instead of trusting training-cutoff knowledge. The `.venv-snow`
+  still works but is now a historical artifact, not a requirement — one 3.14 venv does the
+  app *and* the pipeline.
 - **MFA friction.** Password + TOTP wouldn't cache across the loader and dbt processes, so I
   switched to **key-pair auth** — the right call for headless/CI runs, but a detour.
 - **A correctness trap in the eval itself.** In mock mode the classifier initially ignored

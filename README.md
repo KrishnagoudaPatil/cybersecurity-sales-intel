@@ -71,8 +71,9 @@ cd frontend && npm install && npm run dev     # http://localhost:5173
 # 4. Live models: put ANTHROPIC_API_KEY in backend/.env (see backend/.env.example)
 ```
 
-Rebuilding the data from Snowflake (optional — needs credentials and the `.venv-snow`
-Python 3.12 environment) is documented in [`snowflake/README.md`](snowflake/README.md):
+Rebuilding the data from Snowflake (optional — needs credentials; the Snowflake connector
+and dbt both run on Python 3.14, so the app venv works) is documented in
+[`snowflake/README.md`](snowflake/README.md):
 `load_raw.py` lands the sample, `dbt build` builds the marts, `export_marts.py` republishes
 the snapshot. Set `DATA_BACKEND=snowflake` to have the API query the marts live instead.
 
