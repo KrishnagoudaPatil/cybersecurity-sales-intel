@@ -11,7 +11,7 @@ still work); set a key to use live models. The container listens on `$PORT` (def
 - `ANTHROPIC_API_KEY` — Claude; takes precedence if both are set.
 - `LLM_PROVIDER=gemini|anthropic|mock` — force one explicitly.
 
-## Cloud Run (recommended — one URL, scales to zero, ~$0 at demo traffic)
+## Cloud Run (one URL, scales to zero, ~$0 at demo traffic)
 Prereqs: a GCP project with **billing enabled** (required even for the free tier) and the
 `gcloud` CLI (`gcloud init` to log in and pick the project).
 
@@ -45,19 +45,3 @@ docker build -t firmable-si .
 docker run -p 8080:8080 -e GEMINI_API_KEY=$GEMINI_API_KEY firmable-si
 # open http://localhost:8080   (omit -e to run in mock mode)
 ```
-
-## Fly.io (alternative — always-warm, ~$2/mo, no scale-to-zero cold start)
-```bash
-fly launch --dockerfile Dockerfile --now
-fly secrets set GEMINI_API_KEY=...     # optional; omit for mock mode
-```
-
-## Render / Railway (alternative)
-Point a new Web Service at this repo, environment = Docker. Set `GEMINI_API_KEY` (optional).
-Render provides `$PORT`, which the container honours. Render's free tier spins down when
-idle (~50s cold start); Railway has no lasting free tier (~$5/mo).
-
-## Split deploy (Vercel + backend), if ever preferred
-Not needed here — the single container is simpler and cheaper. If you did split:
-- Backend: deploy the Docker image to Render/Cloud Run; note its URL.
-- Frontend: deploy `frontend/` to Vercel with `VITE_API_BASE=https://<backend-url>`.

@@ -76,8 +76,11 @@ reintroducing phantoms.
     shells don't crowd out substantial prospects. *Effort:* Low.
 
 ## Scale & operations
-9. **Load the full 74 GB**, not the sample: land in an external stage (S3) + Snowpipe,
-   scale the warehouse, cluster RAW by scan date. *Effort:* Medium.
+9. ✅ **Done (tooling) — Full 74 GB load via S3 external stage.** `loader/split_ndjson.py`
+   streams the 13 GB zstd export into ~150 MB gzip chunks for parallel `COPY`, and
+   `loader/load_full_s3.sql` wires up the IAM storage integration, external stage, a scaled
+   auto-suspending warehouse, and `COPY INTO RAW.SCANS`. *Remaining:* Snowpipe for
+   continuous/auto ingest and clustering RAW by scan date. *Effort:* remainder Medium.
 10. **Orchestrate** load -> dbt as one scheduled pipeline (dbt Cloud / Airflow) instead of
     two manual commands.
 11. **Incremental models** so re-runs process only new scan dates.

@@ -26,7 +26,7 @@ Snowflake  RAW.SCANS(v VARIANT)                          ELT: land raw, transfor
    ▼
 backend/app  ── repo (LocalRepo | SnowflakeRepo) ── api (/worklist /companies/{d} /summary /outreach /cost)
              ── signals/classify (banner → service type, LLM, evaluated)
-             ── llm/ client · tracing(JSONL) · cost · prompts(v1/v2) · judgement (summary/outreach)
+             ── llm/ client (provider dispatch: anthropic|gemini|mock) · tracing(JSONL) · cost · prompts(v1/v2) · judgement
                                         ▲ HTTP
    frontend/ (React + Vite): worklist · filters · account drawer · why-now · outreach
 ```
@@ -50,8 +50,8 @@ language.**
 | Per-service findings (CVEs, exposed DB/RDP, EOL, weak TLS, header hygiene) | **dbt SQL** | Derivable from structured fields; deterministic ⇒ reproducible ranking, and it scales to 74 GB in-warehouse |
 | Entity resolution (host → `company_domain`) | **dbt SQL** | Must be auditable — a rep has to trust the attribution |
 | Risk score, fit score, total, tier | **dbt SQL** | Never let a model "pick a number"; keep ranking defensible |
-| Service type from a raw **banner** (free text) | **LLM (cheap, Haiku)** | Real judgement over unstructured text when `product`/`cpe`/`port`/`tags` are absent; high volume |
-| "Why now" summary + outreach email | **LLM (strong, Sonnet)** | Tone & synthesis over the findings; low volume, on demand |
+| Service type from a raw **banner** (free text) | **LLM (cheap, Haiku / Gemini Flash)** | Real judgement over unstructured text when `product`/`cpe`/`port`/`tags` are absent; high volume |
+| "Why now" summary + outreach email | **LLM (strong, Sonnet / Gemini)** | Tone & synthesis over the findings; low volume, on demand |
 
 Consequence: if a rep asks "why is this an A?", the answer is a deterministic breakdown of
 counted findings, not a model's opinion. The LLM never touches the score — it explains and
@@ -72,20 +72,31 @@ Two independent 0–100 axes, blended:
 The weights are currently literals in the model. Promoting them to dbt `vars` (so they're
 tunable without editing SQL) is a tracked improvement.
 
-## Model routing
-- `claude-haiku-4-5` — service-banner classification. High volume (one call per banner the
-  SQL couldn't classify), cheap, fast, and the task (single-label classification into a
-  6-way taxonomy) doesn't need a frontier model. Measured on the eval set at **100%**
-  accuracy with prompt v2 (mock mode; see caveat in how-you-build).
-- `claude-sonnet-5` — "why now" summaries and outreach. Low volume, on demand, higher value
-  where tone and synthesis over the real findings matter.
+## Model routing & pluggable providers
+Every model call goes through one client (`llm/client.py`), which dispatches to a
+**pluggable provider** — Anthropic, Google **Gemini**, or a deterministic **mock** — chosen
+by `LLM_PROVIDER` (or auto-detected: Anthropic if its key is set, else Gemini, else mock).
+Two logical roles are each routed to a per-provider model via `Settings.model_for(role)`:
+
+- **classify** — service-banner classification. High volume (one call per banner the SQL
+  couldn't settle), so a cheap/fast model: `claude-haiku-4-5` or `gemini-3.6-flash`. The
+  task (single-label into a 6-way taxonomy) doesn't need a frontier model. Measured on the
+  eval set at **100%** accuracy with prompt v2 (mock mode; see caveat in how-you-build).
+- **judge** — "why now" summaries and outreach. Low volume, on demand, higher value:
+  `claude-sonnet-5` or a strong Gemini model, where tone and synthesis over the real
+  findings matter.
+
+Transient provider errors (HTTP 429/503 — common on Gemini's free tier) are retried with
+backoff inside the client, so a hiccup doesn't fail the user's click. The deployed demo runs
+on **Gemini, live**.
 
 ## Cost model (tokens × volume × frequency)
-Pricing lives in `llm/cost.py` (USD / 1M tokens — verify against current Anthropic pricing
-before production use): Haiku ≈ $1 in / $5 out; Sonnet ≈ $3 in / $15 out.
+Pricing lives in `llm/cost.py` (USD / 1M tokens — verify against current provider pricing
+before production use): Anthropic Haiku ≈ $1 in / $5 out, Sonnet ≈ $3 in / $15 out; Gemini
+Flash is free-tier at demo volumes (so the deployed demo's live LLM cost is ~$0).
 
 **Banner classification (the volume driver)**
-- Per call: ~300 in + ~25 out ≈ **$0.0004**.
+- Per call: ~300 in + ~25 out ≈ **$0.0004** (Anthropic Haiku); ~$0 on Gemini free-tier.
 - Crucially, this is **not** run per company or per record — only for services whose type
   the deterministic SQL cannot settle from `product`/`cpe`/`port`/`tags`. On this data most
   services are classified by rules for free; the LLM handles the residual of ambiguous
@@ -107,7 +118,7 @@ before production use): Haiku ≈ $1 in / $5 out; Sonnet ≈ $3 in / $15 out.
 
 ## Observability
 Every call appends one JSONL row (`traces/llm_calls.jsonl`): `ts, trace_id, feature,
-prompt_version, model, mode, input, output, decision, input_tokens, output_tokens,
+prompt_version, provider, model, mode, input, output, decision, input_tokens, output_tokens,
 cost_usd, latency_ms, error`. The `/cost` endpoint aggregates it live, by feature. Because
 logging lives *inside* `llm/client.call`, you cannot call the model and forget to trace it.
 
@@ -131,13 +142,23 @@ The API reads prospects through a repository interface with two implementations,
 
 Same interface for both, so `api/main.py` is identical regardless of backend.
 
+## Deployment
+One container: a multi-stage Dockerfile builds the React SPA, and the FastAPI backend serves
+it, so UI and API share one origin (no CORS) on `$PORT` (8080). Deployed to **Google Cloud
+Run** (`gcloud run deploy --source .` → Cloud Build), which gives a single HTTPS URL and
+scales to zero when idle. The LLM key is injected from Secret Manager and `DATA_BACKEND`
+selects local snapshot vs live Snowflake — the live demo runs `snowflake` + Gemini. See
+`deploy.md`.
+
 ## Trade-offs & what I'd add next
 - **Entity resolution is the weak point.** Hosts with no domain drop out, and a missing
   entry in the `infra_domains` seed can create a phantom company. TLS-certificate and
   ASN/org-based resolution are the top backlog items (see `improvements.md`).
 - **Mock LLM mode** is deterministic and version-aware so evals run in CI without a key;
   live numbers require a real key (documented in `results.md`).
-- **Sample, not the full file** — the pipeline is proven on a 1k sample; the full 74 GB path
-  is external stage + Snowpipe + a bigger warehouse.
+- **Full-scale load is built; the sample is the default.** The marts are proven on the 100k
+  sample; the full 74 GB path — split into gzip chunks, uploaded to an S3 **external stage**,
+  `COPY` on a scaled warehouse — is implemented in `snowflake/loader/split_ndjson.py` +
+  `load_full_s3.sql`. Snowpipe + clustering RAW by scan date are the next step up.
 - **No orchestration yet** — load → dbt → export are run by hand; a real deployment schedules
   them (dbt Cloud / Airflow) with incremental models keyed on scan date.
