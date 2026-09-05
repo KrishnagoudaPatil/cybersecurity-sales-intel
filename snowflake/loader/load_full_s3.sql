@@ -52,6 +52,7 @@ use warehouse LOAD_WH;
 copy into FIRMABLE.RAW.SCANS
   from @FIRMABLE.RAW.EXT_SCANS
   file_format = FIRMABLE.RAW.FF_NDJSON
+  pattern = '.*part_.*[.]ndjson[.]gz'   -- only the chunk files (ignores stray objects)
   on_error = 'continue';
 
 -- 7. Verify, then let the warehouse suspend on its own.
