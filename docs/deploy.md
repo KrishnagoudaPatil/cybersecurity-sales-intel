@@ -22,7 +22,7 @@ gcloud services enable run.googleapis.com cloudbuild.googleapis.com
 # build (via Cloud Build) + deploy; prints the public HTTPS URL
 gcloud run deploy cybersecurity-sales-intel \
   --source . \
-  --region australia-southeast1 \
+  --region asia-south1 \
   --allow-unauthenticated \
   --set-env-vars DATA_BACKEND=local
 ```
@@ -34,7 +34,7 @@ no cost between demos (cold start ~1–3s on the first hit).
 Live LLM: rather than putting the key in plain env, store it in Secret Manager and mount it:
 ```bash
 echo -n "<your-gemini-key>" | gcloud secrets create gemini-api-key --data-file=-
-gcloud run deploy cybersecurity-sales-intel --source . --region australia-southeast1 \
+gcloud run deploy cybersecurity-sales-intel --source . --region asia-south1 \
   --allow-unauthenticated --set-env-vars DATA_BACKEND=local \
   --set-secrets GEMINI_API_KEY=gemini-api-key:latest
 ```
