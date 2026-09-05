@@ -16,7 +16,7 @@ COPY prompts/ ./prompts/
 COPY data/ ./data/
 COPY --from=web /web/dist ./frontend/dist
 ENV PYTHONPATH=/app/backend
-# Build the dataset at image build time so the container boots ready.
-RUN cd backend && python -m app.data_gen --n 600
-EXPOSE 8000
-CMD ["sh", "-c", "cd backend && uvicorn app.api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# The app serves the committed data/marts/*.json snapshot (COPY'd above), so the
+# container boots ready with no data-generation step. Cloud Run injects $PORT (8080).
+EXPOSE 8080
+CMD ["sh", "-c", "cd backend && uvicorn app.api.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
