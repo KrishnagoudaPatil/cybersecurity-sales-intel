@@ -4,6 +4,9 @@ WORKDIR /web
 COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm install
 COPY frontend/ ./
+# Single-origin build: FastAPI serves the SPA and the API on one host, so the client
+# must call same-origin root paths (/worklist), not the dev-proxy prefix (/api).
+ENV VITE_API_BASE=""
 RUN npm run build
 
 # ---- stage 2: python backend serving the SPA ----
