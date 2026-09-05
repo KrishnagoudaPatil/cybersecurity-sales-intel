@@ -61,6 +61,69 @@ To skip the snapshot and have the API query the marts live, set `DATA_BACKEND=sn
 (needs credentials and the 3.12 environment at runtime) — do this once the full-scale marts
 are too large to snapshot locally.
 
+## Full load via S3 external stage (74 GB)
+
+The sample loads via the internal stage above. The full ~13 GB compressed / ~74 GB
+uncompressed export is loaded from **S3 in `ap-southeast-1`** (this account's region — same
+region ⇒ no data-transfer cost) via an external stage. Files:
+`loader/split_ndjson.py` (splitter) and `loader/load_full_s3.sql` (the Snowflake side).
+
+**1. Split into parallel-friendly chunks.** COPY parallelises ~one file per warehouse
+thread, so one 13 GB file loads on one thread. Split into many ~150 MB gzip parts:
+```bash
+./.venv-snow/bin/python snowflake/loader/split_ndjson.py <full.ndjson> ./chunks
+# .zst source: zstd -dc full.ndjson.zst | ./.venv-snow/bin/python snowflake/loader/split_ndjson.py - ./chunks
+```
+
+**2. Bucket in ap-southeast-1 + upload** (S3 ingress and in-region S3→Snowflake are free):
+```bash
+aws s3 mb s3://<BUCKET> --region ap-southeast-1
+aws s3 cp ./chunks/ s3://<BUCKET>/scans/ --recursive
+```
+
+**3. Storage integration + IAM handshake.** Run steps 1–2 of `loader/load_full_s3.sql`
+(as ACCOUNTADMIN); `desc integration S3_SHODAN` prints `STORAGE_AWS_IAM_USER_ARN` and
+`STORAGE_AWS_EXTERNAL_ID`. Create an IAM role `snowflake-shodan-load` with:
+
+*Trust policy* (who may assume it):
+```json
+{ "Version": "2012-10-17", "Statement": [{
+  "Effect": "Allow",
+  "Principal": { "AWS": "<STORAGE_AWS_IAM_USER_ARN>" },
+  "Action": "sts:AssumeRole",
+  "Condition": { "StringEquals": { "sts:ExternalId": "<STORAGE_AWS_EXTERNAL_ID>" } } }] }
+```
+*Permission policy* (read the bucket prefix):
+```json
+{ "Version": "2012-10-17", "Statement": [
+  { "Effect": "Allow", "Action": ["s3:GetObject","s3:GetObjectVersion"],
+    "Resource": "arn:aws:s3:::<BUCKET>/scans/*" },
+  { "Effect": "Allow", "Action": ["s3:ListBucket"], "Resource": "arn:aws:s3:::<BUCKET>",
+    "Condition": { "StringLike": { "s3:prefix": ["scans/*"] } } } ] }
+```
+Put this role's ARN in the integration's `storage_aws_role_arn` (already referenced in the
+SQL). Using an integration keeps AWS keys out of SQL — the "senior" pattern, and Snowpipe
+can reuse the same stage later for continuous loads.
+
+**4. Stage + COPY.** Run steps 4–7 of `load_full_s3.sql`: it defines `EXT_SCANS`, spins up
+an auto-suspending `LOAD_WH` (MEDIUM = 32 threads), and `COPY INTO RAW.SCANS`. COPY tracks
+loaded files, so re-running after an interruption resumes rather than duplicates.
+
+**5. Rebuild the marts over the full data:**
+```bash
+cd snowflake/dbt_firmable
+export SNOWFLAKE_PRIVATE_KEY_PATH_ABS="$(cd ../.. && pwd)/.secrets/snowflake_rsa_key.p8"
+../../.venv-snow/bin/dbt build --full-refresh
+```
+The entity-resolution `LATERAL FLATTEN` + waterfall over ~10M rows is the heavy step; run
+dbt on a MEDIUM warehouse (point `profiles.yml` at `LOAD_WH`, or resize `COMPUTE_WH`). No
+redeploy needed — the app (`DATA_BACKEND=snowflake`) serves the full data once dbt finishes.
+
+**Cost (ap-southeast-1):** S3 ingress + in-region transfer $0; S3 storage ~$0.30/mo (delete
+`s3://<BUCKET>/scans/` after loading); Snowflake load ~1–3 credits (≈$0 on the trial);
+loaded storage ~$2–3/mo (drop `RAW.SCANS` to reclaim). Live app queries scan the full marts
+per request — keep the public demo on `DATA_BACKEND=local` if it will get real traffic.
+
 ## Notes
 - **ELT, not ETL**: the raw JSON lands untouched in `VARIANT` and all transformation happens
   in-warehouse, so re-processing never requires re-loading.
