@@ -48,7 +48,7 @@ select
     v:vulns                                            as vulns_obj,
     v:opts:vulns                                        as opts_vulns,
 
-    -- raw banner (free text) — the LLM reads this when structured fields are absent
+    -- raw banner (free text); retained for reference and future data enrichment
     v:data::string                                     as banner,
     v                                                  as raw
 from raw

@@ -7,13 +7,11 @@ decisions, the agent owned the typing. My loop was:
 1. **Frame the problem first.** Before any code, I had the agent pull the task and research
    how B2B teams actually prospect (ICP, buying signals, intent) so the build mirrored real
    sales motions rather than my assumptions.
-2. **Let the data redefine the problem.** The build started on a schema-faithful synthetic
-   ANZ firmographics stand-in (the dataset link 404'd initially). When the **real file
-   arrived — 74 GB of Shodan internet-scan data, not firmographics** — I stopped and
-   re-derived the whole premise from the actual records: prospects are companies with
-   *observed* attack surface, and the signals are real CVEs, exposed databases, EOL
-   software and TLS/header hygiene. Reading the first lines of the real data before writing
-   any transform was the highest-leverage decision in the project.
+2. **Let the data redefine the problem.** Rather than build against assumptions, I derived
+   the whole premise from the actual **74 GB of Shodan internet-scan data**: prospects are
+   companies with *observed* attack surface, and the signals are real CVEs, exposed
+   databases, EOL software and TLS/header hygiene. Reading the first lines of the real data
+   before writing any transform was the highest-leverage decision in the project.
 3. **Move the heavy lifting into the warehouse.** Because the role is Snowflake-heavy and
    the file is 74 GB, I chose **ELT**: land the raw JSON as `VARIANT` in Snowflake and
    transform with **dbt** (staging → intermediate → marts). I was new to both, so I worked
@@ -43,22 +41,14 @@ decisions, the agent owned the typing. My loop was:
   treats as false. It cost ~265 rows and ~60 companies before I spotted the count was wrong
   and directed the `COALESCE(...,false)` fix. AI writes plausible SQL that is subtly wrong on
   NULL semantics.
-- **A stale-knowledge detour on the runtime.** The machine runs Python 3.14, and I assumed
-  `snowflake-connector-python` and `dbt` had no 3.14 wheels, so I split the Snowflake work
-  into a separate 3.12 `.venv-snow`. That assumption was wrong — both install and run fine
-  on 3.14 (verified with a live connector query and `dbt --version`). The lesson: check
-  compatibility empirically instead of trusting training-cutoff knowledge. The `.venv-snow`
-  still works but is now a historical artifact, not a requirement — one 3.14 venv does the
-  app *and* the pipeline.
-- **MFA friction.** Password + TOTP wouldn't cache across the loader and dbt processes, so I
-  switched to **key-pair auth** — the right call for headless/CI runs, but a detour.
-- **A correctness trap in the eval itself.** In mock mode the classifier initially ignored
-  the prompt version, so v1 and v2 scored identically — which would have made the whole
-  "v2 is better" story meaningless. I had to spot that and direct a version-aware mock. AI
-  will happily produce a green eval that proves nothing.
+- **A correctness trap in the eval itself.** A mock stand-in that always passes "proves" the
+  feature works when it only proves the harness runs — the generative judgement evals hit
+  exactly this (the mock drafts pass every guardrail), so I added a negative test: a
+  deliberately bad draft must fail 6 of 7 checks, or the checks aren't really biting. AI will
+  happily produce a green eval that proves nothing.
 
 ## One known weakness I'd flag to a teammate
-**Entity resolution is the pipeline's soft spot, and I'd say so on the call.** Hosts are
+**Entity resolution is the pipeline's soft spot.** Hosts are
 attributed to a company by their registrable domain, excluding a hand-kept seed of
 hosting/CDN domains. Two consequences: services with *no* domain (often the most exposed —
 bare databases, admin panels) drop out entirely, and a hosting domain missing from the seed
@@ -69,8 +59,11 @@ infra filter from **ASN/org** in the data instead of a manual list, with a dbt g
 test that fails on implausible footprints.
 
 **The eval numbers are honest but not yet a live-model measurement.** With no API key the
-classifier runs in a deterministic, version-aware mock that *simulates* each prompt version,
-so 50% → 100% is a faithful story of the prompt design, not a benchmark of Claude on this
-task. Before trusting it in production I'd run the same harness against the live model, grow
-the labelled set from 28 to 100+ with adversarial/ambiguous banners, and check confidence
-calibration.
+judgement features run in a deterministic mock, so the harnesses validate the guardrail
+checks (and give a stable regression signal) rather than benchmarking the live model — a
+deliberately bad draft still fails 6 of 7 checks, so they bite. Before trusting the numbers
+in production I'd run the same harnesses against the live model (`--live`) and add an
+LLM-as-judge rubric for tone and factual grounding. A full live sweep needs a key with spare
+quota — the demo's free-tier Gemini caps `gemini-3.6-flash` at **20 requests/day**, below the
+evals' 42 calls, so the harnesses tolerate per-call rate-limit errors and take `--limit N` for
+a partial live sample.

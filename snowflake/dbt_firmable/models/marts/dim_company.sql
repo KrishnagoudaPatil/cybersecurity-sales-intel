@@ -1,4 +1,4 @@
--- One row per resolved company (by primary domain), with firmographic-style aggregates
+-- One row per resolved company (by primary domain), with company-level aggregates
 -- derived purely from its observed internet footprint.
 with s as (select * from {{ ref('int_service_company') }})
 select

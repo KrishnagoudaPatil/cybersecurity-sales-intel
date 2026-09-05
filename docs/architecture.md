@@ -6,8 +6,8 @@ transforms it — through typed staging, a deterministic per-service signal laye
 entity resolution — into two marts: a company dimension and a scored-prospect fact table.
 A **FastAPI** backend serves that book as a ranked, filterable worklist to a **React** UI.
 All scoring is **deterministic SQL** (auditable, and it runs where the 74 GB lives); an LLM
-is used only where there is genuine language judgement (reading a raw service *banner* the
-SQL rules can't parse, and writing the "why now" summary / outreach email). Every LLM call
+is used only where there is genuine language judgement (writing the "why now" summary and
+the outreach email over the findings the SQL produced). Every LLM call
 goes through a single traced client, so observability, cost accounting and prompt
 versioning are guaranteed, not optional.
 
@@ -25,15 +25,13 @@ Snowflake  RAW.SCANS(v VARIANT)                          ELT: land raw, transfor
    │  export_marts.py  →  data/marts/*.json   (or DATA_BACKEND=snowflake: live query)
    ▼
 backend/app  ── repo (LocalRepo | SnowflakeRepo) ── api (/worklist /companies/{d} /summary /outreach /cost)
-             ── signals/classify (banner → service type, LLM, evaluated)
              ── llm/ client (provider dispatch: anthropic|gemini|mock) · tracing(JSONL) · cost · prompts(v1/v2) · judgement
                                         ▲ HTTP
    frontend/ (React + Vite): worklist · filters · account drawer · why-now · outreach
 ```
 
 ## Why Snowflake + dbt (ELT), not scripts
-The dataset is ~13 GB zstd / ~74 GB uncompressed (~10M records). You do not process that in
-Python on a laptop. The pattern is **ELT**: land the raw JSON untouched in a `VARIANT`
+The dataset is ~13 GB zstd / ~74 GB uncompressed (~10M records). The pattern is **ELT**: land the raw JSON untouched in a `VARIANT`
 column (cheap, lossless, re-processable without re-loading), then push all the heavy
 transformation into the warehouse where it parallelises. dbt gives that transformation
 **structure** (staging → intermediate → marts), **lineage** (`ref()`/`source()`), and
@@ -50,7 +48,6 @@ language.**
 | Per-service findings (CVEs, exposed DB/RDP, EOL, weak TLS, header hygiene) | **dbt SQL** | Derivable from structured fields; deterministic ⇒ reproducible ranking, and it scales to 74 GB in-warehouse |
 | Entity resolution (host → `company_domain`) | **dbt SQL** | Must be auditable — a rep has to trust the attribution |
 | Risk score, fit score, total, tier | **dbt SQL** | Never let a model "pick a number"; keep ranking defensible |
-| Service type from a raw **banner** (free text) | **LLM (cheap, Haiku / Gemini Flash)** | Real judgement over unstructured text when `product`/`cpe`/`port`/`tags` are absent; high volume |
 | "Why now" summary + outreach email | **LLM (strong, Sonnet / Gemini)** | Tone & synthesis over the findings; low volume, on demand |
 
 Consequence: if a rep asks "why is this an A?", the answer is a deterministic breakdown of
@@ -78,13 +75,12 @@ Every model call goes through one client (`llm/client.py`), which dispatches to 
 by `LLM_PROVIDER` (or auto-detected: Anthropic if its key is set, else Gemini, else mock).
 Two logical roles are each routed to a per-provider model via `Settings.model_for(role)`:
 
-- **classify** — service-banner classification. High volume (one call per banner the SQL
-  couldn't settle), so a cheap/fast model: `claude-haiku-4-5` or `gemini-3.6-flash`. The
-  task (single-label into a 6-way taxonomy) doesn't need a frontier model. Measured on the
-  eval set at **100%** accuracy with prompt v2 (mock mode; see caveat in how-you-build).
 - **judge** — "why now" summaries and outreach. Low volume, on demand, higher value:
   `claude-sonnet-5` or a strong Gemini model, where tone and synthesis over the real
-  findings matter.
+  findings matter. This is the only tier a live feature uses today.
+- **classify** — the cheap/high-volume tier (`claude-haiku-4-5` / `gemini-3.6-flash`),
+  retained in the routing config for future high-volume LLM work (buying-signal narration,
+  or banner-based data enrichment); no live feature exercises it today.
 
 Transient provider errors (HTTP 429/503 — common on Gemini's free tier) are retried with
 backoff inside the client, so a hiccup doesn't fail the user's click. The deployed demo runs
@@ -95,39 +91,67 @@ Pricing lives in `llm/cost.py` (USD / 1M tokens — verify against current provi
 before production use): Anthropic Haiku ≈ $1 in / $5 out, Sonnet ≈ $3 in / $15 out; Gemini
 Flash is free-tier at demo volumes (so the deployed demo's live LLM cost is ~$0).
 
-**Banner classification (the volume driver)**
-- Per call: ~300 in + ~25 out ≈ **$0.0004** (Anthropic Haiku); ~$0 on Gemini free-tier.
-- Crucially, this is **not** run per company or per record — only for services whose type
-  the deterministic SQL cannot settle from `product`/`cpe`/`port`/`tags`. On this data most
-  services are classified by rules for free; the LLM handles the residual of ambiguous
-  banners.
-- At full scale you cache by `hash(banner, prompt_version)`: identical banners (and the
-  internet has vast numbers of identical ones) cost once, ever. Steady-state cost becomes a
-  function of *distinct new banners*, not record count.
-
-**Judgement (summary + outreach)**
-- Per call: ~300 in + ~220 out ≈ **$0.0042** (Sonnet). A rep generating 50/day ≈ **$0.21/day**.
-  Generated on demand only, never batched over the book.
+**Judgement (summary + outreach) — the only live LLM cost**
+- Per call: ~300 in + ~220 out ≈ **$0.0042** (Sonnet); ~$0 on Gemini free-tier.
+- Generated **on demand only** (a rep clicks *Summary* or *Outreach* on one account), never
+  batched across the book. A rep generating 50/day ≈ **$0.21/day** on Sonnet.
+- Because it's low-volume and human-triggered, spend scales with rep activity, not with the
+  74 GB of data — the deterministic SQL already did the whole-book work for free.
 
 **Production cost ceiling I'd set**
-- Cache classification by `hash(banner, prompt_version)` → near-zero repeat cost.
-- Classify only banners the SQL rules leave ambiguous — the LLM is a fallback, not the
-  front door.
-- Monthly budget cap with an 80% alert; hard stop that degrades to rules-only if hit.
-- Keep judgement calls user-initiated (they cost ~10× a classification each).
+- Keep judgement on demand only; never batch it across the whole book.
+- Monthly budget cap with an 80% alert; hard stop that degrades to rules-only (no LLM) if hit.
+- If a high-volume LLM feature is later added (banner-based enrichment or buying-signal
+  narration), route it to the cheap tier and cache by `hash(input, prompt_version)` so
+  identical inputs cost once — steady-state cost becomes a function of *distinct new inputs*,
+  not record count.
+- Keep judgement calls user-initiated (one click = one call), so spend tracks rep activity,
+  not the size of the book.
 
-## Observability
-Every call appends one JSONL row (`traces/llm_calls.jsonl`): `ts, trace_id, feature,
+## Observability & cost tracing
+Every call appends one JSONL row to `traces/llm_calls.jsonl`, and the `/cost` endpoint reads
+that file back to aggregate spend + tokens **by feature**, live. Because the write lives
+*inside* `llm/client.call` — the single choke-point every feature goes through — a feature
+cannot call a model without tracing it, and every row comes out the same shape.
+
+**The trace schema (one stable contract).** Each row is: `ts, trace_id, feature,
 prompt_version, provider, model, mode, input, output, decision, input_tokens, output_tokens,
-cost_usd, latency_ms, error`. The `/cost` endpoint aggregates it live, by feature. Because
-logging lives *inside* `llm/client.call`, you cannot call the model and forget to trace it.
+cost_usd, latency_ms, error`. It's a genuine contract because **two independent readers**
+depend on it — the `/cost` aggregation and the eval harness — so it's maintained deliberately,
+not incidentally:
+- **One writer.** The row is built in exactly one place (`client.call`'s `log_call({…})`),
+  never emitted ad-hoc elsewhere, so there is a single definition to change.
+- **Declared, not implicit.** `llm/tracing.py`'s module docstring pins the field list as
+  "stable — depended on by evals and cost reports"; that comment is the source of truth a
+  change is checked against.
+- **Additive by default.** Readers key on fields by name (`r["feature"]`, `r.get("cost_usd")`),
+  so adding a field is backward-compatible; only *renaming or removing* one breaks a reader —
+  which is exactly what the docstring guards as a deliberate schema change.
+
+**On Cloud Run the traces are ephemeral.** The
+JSONL is written to the container's local filesystem, and Cloud Run instances are stateless
+and scale to zero, so a cold start, a redeploy, or a second instance each starts with an empty
+file. `/cost` on the live URL therefore reads back near-zero rather than a running history —
+it reflects one warm instance's lifetime, not all-time spend. That's fine for a demo but is
+**not** durable observability. The production fix is a one-line change *at the same
+choke-point*: instead of (or alongside) the local file, have `log_call` emit each row as a
+structured log to **Cloud Logging** (stdout on Cloud Run is captured automatically and is
+queryable in Logs Explorer) and/or stream it to **BigQuery / a GCS bucket**, then point `/cost`
+at that store. The call sites and the schema above stay identical — only the sink changes.
 
 ## Prompt versioning & evals
 Prompts are files under `prompts/<feature>/<version>.txt`; the active version per feature is
-pinned in `llm/prompts.py:ACTIVE`. The eval harness (`evals/run.sh`) runs the labelled set
-of real Shodan banners through any version and reports accuracy / precision / recall / F1 +
-a v1→v2 delta, writing `evals/results.md`. This is what lets us claim "v2 is better" with a
-number, not a vibe (v1 50% → v2 100% accuracy on the current set).
+pinned in `llm/prompts.py:ACTIVE`. The two live LLM features are judgement (generative), so
+each is measured by an *equivalent quality metric* — grounding + guardrail compliance —
+across 21 hand-labelled accounts in `evals/labelled_accounts.jsonl`:
+- `evals/summary_eval.py` — the "why now" brief: leads-with-strongest, cites the real risk
+  score (grounding), why-now rationale, no fabrication, actionable opener → `summary_results.md`.
+- `evals/outreach_eval.py` — the opener email: leads-with-strongest, ≤110 words, no leaked
+  IPs, no fabrication, CTA, non-alarmist tone → `outreach_results.md`.
+
+Both run deterministically in mock mode (free, reproducible), which validates the harness and
+gives a stable regression signal; `--live` measures the routed model for the real numbers. A
+deliberately bad draft fails 6 of 7 checks, so the guardrails bite rather than pass vacuously.
 
 ## The app's two data backends
 The API reads prospects through a repository interface with two implementations, chosen by
@@ -138,7 +162,7 @@ The API reads prospects through a repository interface with two implementations,
 - `snowflake` — `SnowflakeRepo` queries the marts live (needs credentials + a running
   warehouse; `snowflake-connector-python` runs on Python 3.14, so the app's own venv
   suffices). Chosen because the full marts could grow large enough that snapshotting the
-  whole thing locally is impractical — at that point you query in place instead of exporting.
+  whole thing locally is impractical — at that point the API queries in place instead of exporting.
 
 Same interface for both, so `api/main.py` is identical regardless of backend.
 
@@ -154,11 +178,5 @@ selects local snapshot vs live Snowflake — the live demo runs `snowflake` + Ge
 - **Entity resolution is the weak point.** Hosts with no domain drop out, and a missing
   entry in the `infra_domains` seed can create a phantom company. TLS-certificate and
   ASN/org-based resolution are the top backlog items (see `improvements.md`).
-- **Mock LLM mode** is deterministic and version-aware so evals run in CI without a key;
-  live numbers require a real key (documented in `results.md`).
-- **Full-scale load is built; the sample is the default.** The marts are proven on the 100k
-  sample; the full 74 GB path — split into gzip chunks, uploaded to an S3 **external stage**,
-  `COPY` on a scaled warehouse — is implemented in `snowflake/loader/split_ndjson.py` +
-  `load_full_s3.sql`. Snowpipe + clustering RAW by scan date are the next step up.
-- **No orchestration yet** — load → dbt → export are run by hand; a real deployment schedules
-  them (dbt Cloud / Airflow) with incremental models keyed on scan date.
+- **Mock LLM mode** is deterministic so evals run in CI without a key; live numbers require a
+  real key (documented in `summary_results.md` / `outreach_results.md`).

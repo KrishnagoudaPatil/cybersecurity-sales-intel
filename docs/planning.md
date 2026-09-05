@@ -47,13 +47,8 @@ a company-size proxy from the host footprint), and the blended `total_score` (0.
 0.4 × fit) puts *needs-it-now, and-we-can-sell-to-them* accounts at the top.
 
 ## Scope decisions (what I deliberately did NOT build)
-- **No auth / multi-tenant / CRM sync** — out of scope for a prototype; noted in
-  architecture.
 - **No auto-send of email** — drafts are human-in-the-loop by design (see the skill
   guardrails).
-- **Sample, not the full 74 GB** — a 1k-record sample is loaded end-to-end; the same path
-  (external stage + Snowpipe, warehouse scale-up) handles the full file. Landing the full
-  export is item #9 in [`improvements.md`](improvements.md).
 - **Entity resolution via domains** — hosts are attributed to a company by their
   registrable domain, excluding hosting/CDN infrastructure. This is the largest source of
   error and the top item in the improvement backlog (TLS-certificate and ASN/org-based

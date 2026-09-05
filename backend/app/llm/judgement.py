@@ -67,6 +67,18 @@ def outreach_draft(company: dict) -> dict:
             "body": body, "prompt_version": version, "model": model}
 
 
+def outreach_draft_for(domain: str) -> dict:
+    """Draft an opener straight from a domain, fetching the findings row via the
+    configured data backend (published snapshot by default, live Snowflake when
+    DATA_BACKEND=snowflake). Saves the caller from hand-assembling a findings dict.
+    """
+    from app.repo import get_repo  # lazy: avoids import cost when unused
+    rec = get_repo().company(domain)
+    if not rec:
+        raise ValueError(f"no account found for domain {domain!r}")
+    return outreach_draft(rec["company"])
+
+
 def _lead_finding(c: dict) -> str:
     if (c.get("total_cves") or 0) > 0:
         return f"{c['total_cves']} known CVEs on your public-facing services"
@@ -80,10 +92,15 @@ def _lead_finding(c: dict) -> str:
 
 
 def _mock_summary(c: dict) -> str:
-    return (f"{c['company_domain']} shows real external exposure: {_lead_finding(c)}. "
-            f"Across {c.get('host_count',0)} hosts we observed a risk score of "
-            f"{c.get('risk_score','?')}/100. Lead with the most severe finding and offer a "
-            f"quick external posture review.")
+    # Mirrors the v2 prompt's three-line "why now" brief (Risk / Why now / Opener) so the
+    # offline stand-in is faithful to what the live model is asked to produce.
+    lead = _lead_finding(c)
+    return (f"Risk: {c['company_domain']} shows {lead} (risk score "
+            f"{c.get('risk_score','?')}/100 across {c.get('host_count',0)} hosts).\n"
+            f"Why now: internet-facing exposure like this is exactly what attackers scan for, "
+            f"which puts them in-market for security help right now.\n"
+            f"Opener: I noticed {lead} on {c['company_domain']}'s public footprint — worth a "
+            f"quick external posture review this week?")
 
 
 def _mock_outreach(c: dict) -> str:

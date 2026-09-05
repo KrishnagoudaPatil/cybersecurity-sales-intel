@@ -1,6 +1,0 @@
-Classify this internet service from its banner.
-
-Banner: "{banner}"
-
-Categories: web, remote_access, database, mail, network_infra, unknown
-Answer with just the category.

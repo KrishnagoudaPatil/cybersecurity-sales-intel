@@ -6,21 +6,23 @@ means. Columns are marked **[raw]** (extracted straight from the source JSON) or
 
 ## Pipeline layers
 
-| Layer | Object | Type | Grain | Rows (100k sample) |
-|-------|--------|------|-------|--------------------|
-| Landing | `RAW.SCANS` | table | 1 row per scanned service (raw JSON) | 100,000 |
+| Layer | Object | Type | Grain | Rows (full load) |
+|-------|--------|------|-------|------------------|
+| Landing | `RAW.SCANS` | table | 1 row per scanned service (raw JSON) | 10,329,980 |
 | Seed | `DBT_SEEDS.INFRA_DOMAINS` | table | 1 row per hosting/CDN/ISP domain | see CSV |
 | Seed | `DBT_SEEDS.INFRA_ORG_PATTERNS` | table | 1 row per hosting/telco org substring | see CSV |
-| Staging | `DBT_STAGING.STG_SERVICES` | view | 1 row per service (typed) | ~100k |
-| Intermediate | `DBT_INTERMEDIATE.INT_SERVICE_SIGNALS` | view | 1 row per service + findings | ~100k |
-| Intermediate | `DBT_INTERMEDIATE.INT_SERVICE_COMPANY` | view | 1 row per attributable service | ~10k |
-| Mart | `DBT_MARTS.DIM_COMPANY` | table | 1 row per company | ~5.9k |
-| Mart | `DBT_MARTS.FCT_ACCOUNT_SCORE` | table | 1 row per scored company | ~5.9k |
+| Staging | `DBT_STAGING.STG_SERVICES` | view | 1 row per service (typed) | 10,292,790 |
+| Intermediate | `DBT_INTERMEDIATE.INT_SERVICE_SIGNALS` | view | 1 row per service + findings | 10,292,790 |
+| Intermediate | `DBT_INTERMEDIATE.INT_SERVICE_COMPANY` | view | 1 row per attributable service | 716,904 |
+| Mart | `DBT_MARTS.DIM_COMPANY` | table | 1 row per company | 191,215 |
+| Mart | `DBT_MARTS.FCT_ACCOUNT_SCORE` | table | 1 row per scored company | 191,215 |
 
 Data source: Shodan internet-wide scan export — **NDJSON**, one JSON object per line,
-~13 GB zstd-compressed / ~74 GB uncompressed (~10M records). Each record is one
-service observed on one IP:port. Counts above are from the 100k-record dev sample; the
-1k sample yields proportionally fewer.
+~13 GB zstd-compressed / ~74 GB uncompressed. Each record is one service observed on one
+IP:port. Counts above are the **full load** in Snowflake (10.3M raw records); staging drops
+~37k honeypots, entity resolution attributes ~717k services to companies, and the marts
+collapse those to **191,215 scored companies**. The repo's committed `data/marts/*.json`
+snapshot serves a smaller published subset for the zero-credential local demo.
 
 Supporting objects (not layers): the `registrable_domain` macro (eTLD+1 normalisation,
 a lightweight Public-Suffix-List stand-in) and the `assert_company_footprint_plausible`

@@ -1,8 +1,8 @@
 """Load versioned prompts from the prompts/ directory (files, not inline strings).
 
-Layout:  prompts/<feature>/<version>.txt   e.g. prompts/signal_classification/v2.txt
+Layout:  prompts/<feature>/<version>.txt   e.g. prompts/outreach_draft/v2.txt
 `ACTIVE` pins which version each feature currently uses, so v1 vs v2 can be compared
-by the eval harness. Prompts use Python str.format placeholders.
+by the eval harnesses. Prompts use Python str.format placeholders.
 """
 from __future__ import annotations
 
@@ -12,7 +12,6 @@ from app.config import PROMPTS_DIR
 
 # Which prompt version is live for each feature. Bump here to promote a new version.
 ACTIVE = {
-    "service_classification": "v2",   # core evaluated feature: banner -> service type
     "account_risk_summary": "v1",     # judgement: "why now" security narrative
     "outreach_draft": "v2",           # judgement: findings-grounded outreach
 }

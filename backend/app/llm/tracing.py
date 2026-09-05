@@ -1,9 +1,14 @@
 """Observability: one JSONL row per LLM call.
 
 Schema (stable — depended on by evals and cost reports):
-  ts, trace_id, feature, prompt_version, model, mode,
+  ts, trace_id, feature, prompt_version, provider, model, mode,
   input, output, decision, input_tokens, output_tokens,
   cost_usd, latency_ms, error
+
+The row is written in exactly one place — client.call's log_call({...}) — so this list
+is the single definition of the shape. Adding a field is backward-compatible (readers key
+by name); renaming or removing one breaks /cost and the eval harness, so treat those as a
+deliberate contract change, not a side effect.
 """
 from __future__ import annotations
 
